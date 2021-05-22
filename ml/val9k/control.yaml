@@ -1,0 +1,1 @@
+train: C:\Users\ben titzer\Documents\code\ml\val9k\trainList.txtval: C:\Users\ben titzer\Documents\code\ml\val9k\testList.txttest: C:\Users\ben titzer\Documents\code\ml\val9k\testList.txtnc: 15names: ['Carrotseeds', 'Beehive', 'Mushrooms', 'Chair', 'Blueberries', 'Turnipseeds', 'Bed', 'Deer', 'Loot', 'Workbench', 'Cookingstation', 'Door', 'Enemy', 'Tree', 'Chest']
