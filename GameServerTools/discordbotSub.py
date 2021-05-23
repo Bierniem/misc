@@ -9,7 +9,7 @@ import requests
 import re
 import os
 
-os.chdir('C:\\Users\\biern\\Desktop\\Python')
+#os.chdir('C:\\Users\\biern\\Desktop\\Python')
 
 #load or instantiate dictionaries
 try:
@@ -43,26 +43,26 @@ def getMyExtIp():
     return "n/a"
 
 def getIp():
-	external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
-	return external_ip
+    external_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+    return external_ip
 	
 def vote(dict,d0,d1,name):
-	#sort d0,d1
-	darry = np.array(d0,d1)
-	#add to dictionary
-	dict[name] = darry
-	#save to file
-	pickle.dump(dict,dict['filename'])
-	#tally votes
-	votes = []
-	for key in dict.keys():
-		if key != 'filename':
-			votes.append(dict[key][0])
-			votes.append(dict[key][1])
-	histbins = set(votes)
-	histbins.append(np.max(histbins)+1)
-	hist = np.histogram(votes,histbins)
-	return hist
+    #sort d0,d1
+    darry = np.array(d0,d1)
+    #add to dictionary
+    dict[name] = darry
+    #save to file
+    pickle.dump(dict,dict['filename'])
+    #tally votes
+    votes = []
+    for key in dict.keys():
+        if key != 'filename':
+            votes.append(dict[key][0])
+            votes.append(dict[key][1])
+    histbins = set(votes)
+    histbins.append(np.max(histbins)+1)
+    hist = np.histogram(votes,histbins)
+    return hist
 	
 	
 	
@@ -107,19 +107,21 @@ async def on_message(message):
         
 @client.event
 async def on_ready():
-	print('logged in')
+    print('logged in')
 
 print('starting')
 time.sleep(10)
 print('here')
 while(True):
-	time.sleep(1)
-	print ('here2')
-	try:
-		run_client(client,'Njc1MTgxNjk3ODI5OTYxNzMx.Xjzajw.px6daNoTaxzXCkiJyyha20My6B4')
-		#client.run('musicwebsiteemail@gmail.com','Aa19726033')
-		print('nerr')
-	except Exception as e:
-		print('err',e)
-		#client.close()
-		exit()
+    time.sleep(1)
+    print ('here2')
+    with open('token.pkl','rb') as tkf:
+        token = pickle.load(tkf)
+    try:
+        run_client(client,token)
+        #client.run('musicwebsiteemail@gmail.com','Aa19726033')
+        print('nerr')
+    except Exception as e:
+        print('err',e)
+        #client.close()
+        exit()
