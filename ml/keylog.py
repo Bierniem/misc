@@ -38,9 +38,16 @@ def control_to_ints(control):
         print(types)
     return [types,x,y,t] #these will probably have to be converted to some kind of byte format
 
-def start_logger_special():
-    """ we'll do it live"""
-
+def print_logger():
+    """will run until the terminal is closed"""
+    kl = []
+    mouse.hook(kl.append)
+    keyboard.hook(kl.append)
+    while(True):
+        time.sleep(.0001)
+        while len(kl) > 0:
+            print(','.join([str(i) for i in control_to_ints(kl.pop(0))]))
+            #fout.write(','.join([str(i) for i in control_to_ints(kl.pop(0))])+'\r')
 
 def add_record(kl):
     dumpFolder = 'keylogs'
