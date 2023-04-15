@@ -137,6 +137,24 @@ class MakeSudoku(Sudoku):
         return
 
         
+class Conway:
+    def __init__(self,dims):
+        self.field = np.zeros(dims)
+        self.probs = np.ones([dims,2], dtype = bool)
+        self.probs_z_ind = np.zeros(self.probs.shape,dtype = int)
+        self.resets = []
+        for x,y,z in np.ndindex(self.probs.shape):
+            self.probs_z_ind[x,y,z] = z+1
+        #self.lastIndex = None
+        self.compute_probs()
+        return
+
+    def step(self,):
+        kernel = np.array([[1,1,1],[1,1,1],[1,1,1]])
+        neighbors = convolve(self.field,kernel)
+        self.field = neighbors < 3 + neighbors>1
+        return
+
 
 
 def neighbors(field):
@@ -183,6 +201,21 @@ def plot_surface(field):
 
     plt.show()
 
+def convolve(a:np.array,kernel):
+    #neighbors(np.zeros((2,3)))
+    #a = np.arange(15).reshape((3,-1))
+    aInd = np.ndindex(a.shape)
+    #make kernel square
+    aorigshape = a.shape
+    kernelShift = int((kernel.shape[0]-1)/2)
+    a=np.pad(a,kernelShift)
+    b = np.zeros(a.shape)
+    for i,j in np.ndindex(aorigshape):
+        im = i+kernelShift
+        jm = j+kernelShift
+        print(a[im - kernelShift : im + kernelShift,jm - kernelShift : jm + kernelShift])
+        b[im - kernelShift : im + kernelShift, jm - kernelShift : jm + kernelShift] += a[im - kernelShift : im + kernelShift, jm - kernelShift : jm + kernelShift]
+    return b
 
 def test_convolve():
     #neighbors(np.zeros((2,3)))
