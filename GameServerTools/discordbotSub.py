@@ -8,6 +8,10 @@ import asyncio
 import requests
 import re
 import os
+from requests import get
+
+
+
 
 #os.chdir('C:\\Users\\biern\\Desktop\\Python')
 
@@ -34,8 +38,9 @@ def run_client(client, *args, **kwargs):
 
 def getMyExtIp():
     try:
-        res = requests.get("http://whatismyip.org")
-        myIp = re.compile('(\d{1,3}\.){3}\d{1,3}').search(res.text).group()
+        #res = requests.get("http://whatismyip.org")
+        #myIp = re.compile('(\d{1,3}\.){3}\d{1,3}').search(res.text).group()
+        myIp = get('https://api.ipify.org').content.decode('utf8')
         if myIp != "":
             return myIp
     except:
@@ -66,7 +71,7 @@ def vote(dict,d0,d1,name):
 	
 	
 	
-client = discord.Client()
+client = discord.Client(intents=discord.Intents.default())
 	
 @client.event
 async def on_message(message):
@@ -74,6 +79,10 @@ async def on_message(message):
     channel = message.channel
     if message.author == client.user:
         return
+    if message.content.startswith('!help'):
+        msg = "this bot provides the following functions:\n!ip : return the current ip of the server\n!up : returns the current status of the server\n !who : returns a list of current players\n!help : prints this help message"
+        await channel.send(msg)
+        time.sleep(1)
     if message.content.startswith('!ip'):
         print('getting ip')
         ip = getMyExtIp()
@@ -115,11 +124,10 @@ print('here')
 while(True):
     time.sleep(1)
     print ('here2')
-    with open('token.pkl','rb') as tkf:
-        token = pickle.load(tkf)
+    with open("token.key","r") as tkf:
+        token = tkf.read()
     try:
         run_client(client,token)
-        #client.run('musicwebsiteemail@gmail.com','Aa19726033')
         print('nerr')
     except Exception as e:
         print('err',e)
