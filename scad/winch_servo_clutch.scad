@@ -204,14 +204,14 @@ module servoMount(){
     //raise the blocks so that the screw is in line with the belt
     //translate([0,0,35])rotate([-90,0,0])rotate([0,0,90])nutSpace(nutSize,nutThickness,boltRad,tolerance=.1);
 
-    translate([8,bodyWidth+.5+5/2,0])difference(){
-        cube(size=[nutThickness+2,nutSize*2+1,15]);
-        translate([nutThickness+2,0,14])rotate([-90,0,0])rotate([0,0,90])nutSpace(nutSize = nutSize, nutThickness = nutThickness, boltRad = boltRad, tolerance = .1);
-    }
-    translate([8,-(nutThickness*2+1+3.8)/2,0])difference(){
-        cube(size=[nutThickness+2,nutSize*2+1,15]);
-        translate([nutThickness+2,0,14])rotate([-90,0,0])rotate([0,0,90])nutSpace(nutSize = nutSize, nutThickness = nutThickness, boltRad = boltRad, tolerance = .1);
-    }
+    // translate([8,bodyWidth+.5+5/2,0])difference(){
+    //     cube(size=[nutThickness+2,nutSize*2+1,15]);
+    //     translate([nutThickness+2,0,14])rotate([-90,0,0])rotate([0,0,90])nutSpace(nutSize = nutSize, nutThickness = nutThickness, boltRad = boltRad, tolerance = .1);
+    // }
+    // translate([8,-(nutThickness*2+1+3.8)/2,0])difference(){
+    //     cube(size=[nutThickness+2,nutSize*2+1,15]);
+    //     translate([nutThickness+2,0,14])rotate([-90,0,0])rotate([0,0,90])nutSpace(nutSize = nutSize, nutThickness = nutThickness, boltRad = boltRad, tolerance = .1);
+    // }
 }
 
 module adjustableServoBeltClutch(winchAxelRadius){
@@ -338,15 +338,7 @@ module block(r1,r2,h,ropeRadius){
     translate([0,r1/2+ropeRadius/2-r2,-ropeRadius/2])cylinder(h = h+ropeRadius,r=ropeRadius);
 }
 
-module swivelGun(bore,radius1,radius2,length){
-    //barrel
-    translate([0,0,radius1+2*bore*.7]){
-        difference(){
-            cylinder(h = length, r1 = radius1, r2=radius2,$fn=120);
-            translate([0,0,length/2+.01]) cylinder(h = length/2, r = bore,$fn=120);
-        }
-    }
-    //muzzle
+module bellMuzzle()
     translate([0,0,length+radius1+2*bore*.7]){ 
         rotate([180,0,0]){
             rotate_extrude(convexity=10,$fn=120){ 
@@ -358,6 +350,22 @@ module swivelGun(bore,radius1,radius2,length){
                 }
             }
         }
+    }
+
+module swivelGun(bore,radius1,radius2,length){
+    //barrel
+    translate([0,0,radius1+2*bore*.7]){
+        difference(){
+            cylinder(h = length, r1 = radius1, r2=radius2,$fn=120);
+            translate([0,0,length/2+.01]) cylinder(h = length/2, r = bore,$fn=120);
+        }
+    }
+    //muzzle
+    translate([0,0,length+radius1+2*bore*.7]){ 
+        torus(radius = radius2, thicknessRadius = bore/2.5,$fn=12);
+    }
+    translate([0,0,length+radius1+2*bore*.7-bore/2]){
+        torus(radius=radius2,thicknessRadius=bore/3.5,$fn=12);
     }
     //breech
     translate([0,0,radius1+radius1/2-.1])cylinder(h=radius1/2,r2=radius1,r1=bore/2,$fn=120);
@@ -453,17 +461,128 @@ module sweep(bladeWidth,bladeThickness,bladeLen,shaftLen,shaftRadius,handleRadiu
     }
 }
 
+module anchor(flukeWidth,flukeLength,flukeThickness,armLength,armRadius,shankLength,shankRadius,stockLength,stockThickness){
+    //fluke
+    translate([0,armLength/2,0]){
+        for (i=[0:1]){
+
+            rotate([0,0,i*180]){
+            translate([0,i*armLength,0]){
+                hull(){
+                    translate([0,flukeLength/2,flukeThickness/3+flukeLength/2*sin(25)])sphere(flukeThickness/2,$fn=6);
+                    translate([0,0,-armLength*.15*sin(0)])sphere(armRadius,$fn=6);
+                }
+                for (j=[0:30]){
+                    hull(){
+                        translate([0,-j*armLength/30/2,-armLength*.15*sin(j*180/30/2)])sphere(armRadius,$fn=6);
+                        translate([0,-(j+1)*armLength/30/2,-armLength*.15*sin((j+1)*180/30/2)])sphere(armRadius,$fn=6);
+                    }
+                }
+                rotate([25,-5,0])
+                hull(){
+                    translate([flukeWidth/2-flukeWidth/4,0,0])cylinder(h = flukeThickness*1.2, r = flukeWidth/4,$fn=12);
+                    translate([0,flukeLength-flukeThickness,0])cylinder(flukeThickness,r=flukeThickness,$fn=12);
+                }
+                rotate([25,5,0])
+                hull(){
+                    translate([-flukeWidth/2+flukeWidth/4,0,0])cylinder(h = flukeThickness*1.2, r = flukeWidth/4,$fn=12);
+                    translate([0,flukeLength-flukeThickness,0])cylinder(flukeThickness,r=flukeThickness,$fn=12);
+                }
+            }
+            }
+        }   
+    }
+    //shank
+    difference(){
+        hull(){
+            translate([0,0,-armLength*.15*sin(30*180/30/2)])sphere(shankRadius,$fn=8);
+            translate([0,0,shankLength-armLength*.15*sin(30*180/30/2)])sphere(shankRadius,$fn=8);
+        }
+        translate([-shankRadius*2,0,shankLength-shankRadius*1.1-armLength*.15*sin(30*180/30/2)])rotate([0,90,0])cylinder(h = shankRadius*3,r=shankRadius*.45,$fn=8);
+    }
+    //stock
+    translate([0,0,shankLength-shankRadius*1.1-stockThickness-armLength*.15*sin(30*180/30/2)])
+    rotate([0,0,90]){
+        for (i=[0:1]){
+            rotate([0,0,i*180]){
+                hull(){
+                    translate([0,stockLength/2,stockThickness*.1])cube(stockThickness*.65,center=true);
+                    translate([0,0,0])cube(stockThickness,center=true);
+                }
+                translate([0,stockLength/6,stockThickness*(.05)])cube([stockThickness,stockThickness/5,stockThickness],center=true) ;
+                translate([0,stockLength/3.5,stockThickness*.05])cube([stockThickness*.9,stockThickness/5,stockThickness*.9],center=true) ;
+            }
+        }
+    }
+
+}
+module springHolderA(innerRadius){
+cylinder(h = innerRadius*2.5, r = innerRadius);
+translate([0,innerRadius,innerRadius]) rotate([90,0,0])cylinder(h = innerRadius*2.5, r = innerRadius); 
+}
+
+module servoPulleyWithTensioner(pulleyRadius,tensionerArmLen,){
+    //servo pulley
+    translate([0,0,15])
+    difference(){
+        cylinder(h = pulleyRadius, r = pulleyRadius);
+        union(){
+            translate([0,0,pulleyRadius/2])torus(radius = pulleyRadius*1.3, thicknessRadius = pulleyRadius/2,$fn=12);
+            servoScrewPocket();
+        }
+    }
+
+    //tensioner
+    //spring mount
+    difference(){ 
+        union(){
+            servoMount();
+            translate([4,0,0])springHolderA(innerRadius = 2);
+        }
+        translate([4,0,0])cylinder(h=6,r=1);
+    }
+    //arm
+    translate([4,0,2.5*2+.1]){
+        rotate([0,180,190]){
+            cylinder(h=2.5*2,r=.9);
+            translate([0,30,-8])cylinder(h=6,r=.9);
+            hull(){
+                translate([0,0,-2])cylinder(h=2,r=2);
+                translate([0,30,-2])cylinder(h=2,r=2);
+            }
+            translate([-2,12,3]){
+                rotate([0,90,0])springHolderA(innerRadius=2);
+                translate([2,0,-3])cylinder(h=4,r=2);
+            }
+            translate([0,30,-5]){
+                difference(){
+                    cylinder(h = pulleyRadius/2, r = pulleyRadius/2);
+                    union(){
+                        translate([0,0,pulleyRadius/2/2])torus(radius = pulleyRadius/2*1.3, thicknessRadius = pulleyRadius/2/2,$fn=12);
+                        cylinder(h=10,r=1);
+                    }
+                }
+            }
+        }
+    }
+
+
+}
 
 //belayPin();
 //translate([0,0,10])mastBelayPinBlock();
 //translate([50,0,0])deadeye(radius = 1.7, depth = 1.5, holeRadius = .44, nholes = 3);
-//translate([60,0,0])block(r1=1.9,r2=1.7,h=1.5,ropeRadius=.44,$fn=36);
-translate([-70,0,0])sweep(bladeWidth=250/48,bladeThickness=40/48,bladeLen=1000/48,shaftLen=4500/48,shaftRadius=38/48,handleRadius=20/48,handleLen=700/48,$fn=12);
-translate([-50,20,0])swivelGun(bore=.8,radius1=1.7,radius2=1.2,length=20); 
-translate([0,0,9.5]){
-    translate([-50,20,0])rotate([0,0,90])yolk(bore=.9,radius1=1.7,radius2=1.2);
-    translate([-50,20,0])rotate([0,180,90])yolk(bore=.9,radius1=1.7,radius2=1.2);
-}
+servoPulleyWithTensioner(pulleyRadius = 5, tensionerArmLen = 15,$fn=36);
+translate([60,0,0])block(r1=2,r2=1.7,h=1.5,ropeRadius=.55,$fn=36);
+translate([-90,0,0])anchor(flukeWidth=300/48,flukeLength=300/48,flukeThickness=40/48,armLength=1600/48,armRadius=50/48,shankLength=2100/48,shankRadius=65/48,stockLength=2200/48,stockThickness=200/48);
+//translate([-70,0,0])sweep(bladeWidth=200/48,bladeThickness=38/48,bladeLen=700/48,shaftLen=2500/48,shaftRadius=30/48,handleRadius=20/48,handleLen=330/48,$fn=12);
+//translate([-70,-20,0])sweep(bladeWidth=250/48,bladeThickness=38/48,bladeLen=1000/48,shaftLen=5500/48,shaftRadius=38/48,handleRadius=20/48,handleLen=700/48,$fn=12);
+//translate([-70,-40,0])sweep(bladeWidth=250/48,bladeThickness=38/48,bladeLen=1000/48,shaftLen=7000/48,shaftRadius=38/48,handleRadius=20/48,handleLen=700/48,$fn=12);
+//translate([-50,20,0])swivelGun(bore=.8,radius1=1.7,radius2=1.2,length=20); 
+//translate([0,0,9.5]){
+//   translate([-50,20,0])rotate([0,0,90])yolk(bore=.9,radius1=1.7,radius2=1.2);
+//    translate([-50,20,0])rotate([0,180,90])yolk(bore=.9,radius1=1.7,radius2=1.2);
+//}
 //winch thing
 //adjustableServoBeltClutch(winchAxelRadius = 1);
 //translate([40,0,0])slidyPart(winchAxelRadius=1);

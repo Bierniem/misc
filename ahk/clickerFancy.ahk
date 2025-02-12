@@ -1,9 +1,14 @@
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 ; #Warn  ; Enable warnings to assist with detecting common errors.
-SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
+SendMode Event  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
+#InstallMouseHook
+#InstallKeybdHook
 
 #MaxThreadsPerHotkey 3
+#SingleInstance, force
+SetTitleMatchMode, 2
+#IfWinActive, Valheim
 !1::  ; Alt+1 hotkey (change this hotkey to suit your preferences).
 	#MaxThreadsPerHotkey 1
 	if KeepWinZRunning  ; This means an underlying thread is already running the loop below.
@@ -36,9 +41,9 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 	KeepWinZRunning := true
 	Loop
 	{
-		MouseClick, right
-		Sleep, 200
+		Click,Right,"Down"
 		if not KeepWinZRunning  ; The user signaled the loop to stop by pressing Win-Z again.
+			Click,Right,"Up"
 			break  ; Break out of this loop.
 	}
 	KeepWinZRunning := false  ; Reset in preparation for the next press of this hotkey.
