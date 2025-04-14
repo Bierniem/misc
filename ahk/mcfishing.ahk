@@ -44,17 +44,77 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 	Loop
 	{
-		Sleep, 100
-		PixelSearch ,outx,outy,500,400,1100,800,0x2023B8,10,fast
-		PixelGetColor, color, %outx%, %outy%
-		PixelSearch ,outx,outy,500,400,1100,800,0x2023B8,10,fast
+		Sleep, 150
+		PixelSearch ,outx,outy,500,400,1100,800,0x181DA0,15,fast
+		Sleep, 150
+		;PixelGetColor, color, %outx%, %outy%
+		;PixelSearch ,outx,outy,500,400,1100,800,0x181DA0,10,fast
 		;PixelSearch ,outx,outy,500,400,1100,800,0x131F49,5,fast
 		;PixelSearch ,outx,outy,100,100,200,200,0x131F49,1,fast
 		;PixelSearch, Px, Py, 200, 200, 300, 300, 0x9d6346, 3, Fast
 		if (ErrorLevel==1)
 		{
-			mouseclick, right
-			Sleep, 2000
+			PixelSearch ,outx,outy,500,400,1100,800,0x181DA0,15,fast
+			if (ErrorLevel==1)
+			{
+				mouseclick, right
+				Sleep, 2000
+			}
+		}
+		;if (ErrorLevel==2)
+		;	FileAppend, 
+		;	(
+		;	ERROR 
+		;	), %A_ScriptDir%\colorfound.txt
+		;if (ErrorLevel==0)
+		;{
+		;	FileAppend, 
+		;	(
+		;	%outx%, %outy% %color%`n;
+		;	), %A_ScriptDir%\colorfound.txt
+		;}
+		if not KeepWinZRunning  ; The user signaled the loop to stop by pressing Win-Z again.
+			break  ; Break out of this loop.
+
+	}
+	KeepWinZRunning := false  ; Reset in preparation for the next press of this hotkey.
+	return
+
+	#MaxThreadsPerHotkey 3	
+!6::  ; Alt+5 hotkey (change this hotkey to suit your preferences).
+	#MaxThreadsPerHotkey 1
+	if KeepWinZRunning  ; This means an underlying thread is already running the loop below.
+	{
+		KeepWinZRunning := false  ; Signal that thread's loop to stop.
+		return  ; End this thread so that the one underneath will resume and see the change made by the line above.
+	}
+	; Otherwise:
+	KeepWinZRunning := true
+	scroller:=0
+	Loop
+	{
+		Sleep, 150
+		PixelSearch ,outx,outy,500,400,1500,800,0x181DA0,30,fast
+		Sleep, 150
+		;PixelGetColor, color, %outx%, %outy%
+		;PixelSearch ,outx,outy,500,400,1100,800,0x181DA0,10,fast
+		;PixelSearch ,outx,outy,500,400,1100,800,0x131F49,5,fast
+		;PixelSearch ,outx,outy,100,100,200,200,0x131F49,1,fast
+		;PixelSearch, Px, Py, 200, 200, 300, 300, 0x9d6346, 3, Fast
+		if (ErrorLevel==1)
+		{
+			PixelSearch ,outx,outy,500,400,1500,800,0x181DA0,30,fast
+			if (ErrorLevel==1)
+			{
+				mouseclick, right
+				Sleep, 1500
+				if (scroller==1)
+				{
+						MouseClick, WheelDown
+				}
+				scroller:=scroller+1
+				scroller := Mod(scroller,2)
+			}
 		}
 		;if (ErrorLevel==2)
 		;	FileAppend, 
