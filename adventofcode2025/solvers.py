@@ -1,5 +1,13 @@
 import numpy as np
 
+
+a,b,c
+0,0,0
+0,1,1
+1,0,1
+1,1,1
+
+
 def day1(inputFile):
     zcount = 0
     dial = 50
