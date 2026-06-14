@@ -1,5 +1,18 @@
 circle_res_high = 20;
 circle_res_low = 10;
+// * try to add the minimum retention to the individual objects. 
+// like the tube should be part of the battery so it gets moved together.
+// * reduce the cutouts around the pi for wiring so the pi is retained better. 
+// * add more room for the headers on the pi so I can route wires out for leds/etc
+// * consider making the wire space for the pi have a bridge over it to help retain 
+// the sled in the case
+// * the cable/usb adapter relief is wider than it needs to be, and so the sled is
+// > 5mm wider than it needs to be
+// * 2" thin walled pvc might still fit it if I wanted to make a waterproof version 
+// but I need to consider how to access the sma
+// * make the sma access area slightly conical/sloped/self supported to not need supports
+// * make the battery retention lip slightly conical to not need supports
+
 
 
 
@@ -161,7 +174,7 @@ module battery_mount_retention_ring(){
     // }
 }
 module battery_relief(){
-    batt_diameter = 27;
+    batt_diameter = 27.5;
     batt_len = 106.9;
     batt_face_inset = 2.5;
     batt_face_clear_dist = 75;
@@ -176,7 +189,7 @@ module rtl_relief(){
     looseness=0.1;
     sma_bare_threads_len=4.1;
     lock_washer=1;
-    sma_bare_threads_diameter=6.2;
+    sma_bare_threads_diameter=6.5;
     sma_connector_diameter=7.8;
     bulkhead_thickness=3;
     rtl_to_bulkhead_external=34.3;
@@ -188,7 +201,7 @@ module rtl_relief(){
     // clear area to access sma connector
     translate([0,0,-rtl_to_bulkhead])linear_extrude(rtl_to_bulkhead-sma_bare_threads_len)hull(){
         circle(d=rtl_width,$fn=circle_res_low);
-        translate([0,10,0])circle(d=rtl_width,$fn=circle_res_low);
+        translate([0,20,0])circle(d=rtl_width,$fn=circle_res_low);
     }
     //clear out usb area
     
@@ -262,9 +275,9 @@ module pi_relief(){
 
 module component_reliefs(){
     //line these up so they don't interfere with eachother
-    translate([44.9,-10,14.5])pi_relief();
-    translate([.4,.5,.5])rotate([0,90,0])battery_relief();
-    translate([76.2,22,1])rotate([-90,0,180])rotate([0,90,0])rtl_relief();
+    translate([44,-10,14.5])pi_relief();
+    translate([.5,.5,.5])rotate([0,90,0])battery_relief();
+    translate([76.3,25,-2])rotate([-90,0,180])rotate([0,90,0])rtl_relief();
 }
 
 module component_shadow(){
@@ -276,7 +289,7 @@ module component_shadow(){
 }
 
 module component_container(){
-    linear_extrude(65)minkowski(){
+    linear_extrude(69.5)minkowski(){
         square([31,45]);
         circle(r=5,$fn=circle_res_high);
     }
@@ -291,9 +304,21 @@ module component_assembly(){
 }
 
 module case(){
+    linear_extrude(150)difference(){
+        minkowski(){
+            square([31,45]);
+            circle(r=7,$fn=circle_res_high);
+        }
+        minkowski(){
+            square([31,45]);
+            circle(r=5.3,$fn=circle_res_high);
+        }
+    // bottom with port for usb bulkhead offset to open side
+    }
     // shroud + ports for sma bulkhead, usb bulkhead, led(s), button
 }
-component_assembly();
+// component_assembly();
+case();
 // battery_relief();
 // rtl_relief();
 // pi_relief();
