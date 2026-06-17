@@ -3,6 +3,7 @@ circle_res_low = 10;
 
 bulkhead_thickness = 3;
 /*
+Print1
 * try to add the minimum retention to the individual objects. 
 like the tube should be part of the battery so it gets moved together.
     * did the battery.. kinda, added the mount and just copy the transformations
@@ -19,110 +20,27 @@ but I need to consider how to access the sma
 * make the battery retention lip slightly conical to not need supports
     * done
 * it's still a lot higher layer resolution than it probably needs to be printed at
+Print 2
+resize a bunch so stuff fits...
+Print 3
+* open up the cable channel more to allow better access to the button for assembly
+maybe by reducing the width of the usb bridge
+* reduce the bulkhead thickness at the cable channel, its like 5mm currently
+* open up the access to the sma adapter assembly consider turning the rtl flat 
+if there's space(width) to get the sma closer to the bottom
+* increase the diameter of the sma connecter max for the barrel to pass through
+    * done
+* move the led towards the face to get it out from under the button
+    * done moved up 2mm
+
 */
 
 
-module rubber_band_hook(){
-    thickness = 3.5;
-    height = 3;
-    union(){
-        translate([0,0,(height+thickness)/2])cylinder(d=thickness, h=height+thickness, center=true, $fn=100);
-        translate([0,(thickness+thickness/3)/2,height+thickness/2])rotate([90,0,0])cylinder(d=thickness, h=thickness+thickness/3, center=true, $fn=100);
-    }
-}
-
-module ring(id,od,$fn){
-    difference(){
-        circle(r=od/2, center=true);
-        circle(r=id/2, center=true);
-    }
-}
-
-module pi_mount(){
-    via_diameter = 2.6;
-    via_pad_diameter = 3.5*2;
-    via_dist_short = 23;
-    via_dist_long = 58;
-    lift = .5;
-    pi_height = 10.6+2;
-    pi_width = 30;
-    pi_len = 65;
-    width_plus_connector = 49;
-    plate_thickness = 2;
-    pi_xy_overhang = 1;
-    usb_port_offset = 41.4;
-    power_port_offset = 54;
-    hdmi_port_offset = 12.4;
-
-    post_0_pos = [via_pad_diameter/2+width_plus_connector-pi_width+pi_xy_overhang/2,via_pad_diameter/2+pi_xy_overhang/2,plate_thickness+lift/2];
-    module lift_post(){
-        cylinder(lift, d=via_pad_diameter-1, center=true, $fn=100);
-    }
-    module neg_lift_post(){
-        cylinder(lift+10, d1=via_diameter, center=true, $fn=100);
-    }
-    difference(){
-        union(){
-            cube([width_plus_connector+pi_xy_overhang,pi_len+pi_xy_overhang,plate_thickness]);
-            translate(post_0_pos)lift_post();
-            translate(post_0_pos+[via_dist_short,0,0])lift_post();
-            translate(post_0_pos+[0,via_dist_long,0])lift_post();
-            translate(post_0_pos+[via_dist_short,via_dist_long,0])lift_post();
-            // translate([post_0_pos[0]-via_diameter-4,4+pi_len-power_port_offset,plate_thickness])rotate([0,0,-90])rubber_band_hook();
-        }
-        union(){
-            translate(post_0_pos)neg_lift_post();
-            translate(post_0_pos+[via_dist_short,0,0])neg_lift_post();
-            translate(post_0_pos+[0,via_dist_long,0])neg_lift_post();
-            translate(post_0_pos+[via_dist_short,via_dist_long,0])neg_lift_post();
-        }
-    }
-}
-module pi_mount_glue_in_lift(){
-    via_diameter = 2.6;
-    via_pad_diameter = 3.5*2;
-    via_dist_short = 23;
-    via_dist_long = 58;
-    lift = .5;
-    pi_height = 10.6+2;
-    pi_width = 30;
-    pi_len = 65;
-    width_plus_connector = 49;
-    plate_thickness = 2;
-    pi_xy_overhang = 1;
-    usb_port_offset = 41.4;
-    power_port_offset = 54;
-    hdmi_port_offset = 12.4;
-
-    post_0_pos = [via_pad_diameter/2+width_plus_connector-pi_width+pi_xy_overhang/2,via_pad_diameter/2+pi_xy_overhang/2,0];
-    module lift_post_slot(){
-        cube(size=[via_pad_diameter, via_pad_diameter, 10], center=true);
-    }
-    module neg_lift_post(){
-        cylinder(lift+10, d1=via_diameter, center=true, $fn=100);
-    }
-    difference(){
-        union(){
-            cube([width_plus_connector+pi_xy_overhang,pi_len+pi_xy_overhang,plate_thickness]);
-            // translate(post_0_pos)lift_post();
-            // translate(post_0_pos+[via_dist_short,0,0])lift_post();
-            // translate(post_0_pos+[0,via_dist_long,0])lift_post();
-            // translate(post_0_pos+[via_dist_short,via_dist_long,0])lift_post();
-            // translate([post_0_pos[0]-via_diameter-4,4+pi_len-power_port_offset,plate_thickness])rotate([0,0,-90])rubber_band_hook();
-        }
-        // union(){
-        //     translate(post_0_pos)lift_post_slot();
-        //     translate(post_0_pos+[via_dist_short,0,0])lift_post_slot();
-        //     translate(post_0_pos+[0,via_dist_long,0])lift_post_slot();
-        //     translate(post_0_pos+[via_dist_short,via_dist_long,0])lift_post_slot();
-        // }
-    }
-}
 
 module pi_mount_pin(){
     head_diameter = 3.5*2-1;
     head_thickness = 2;
-    shaft_diameter = 2.6-.1;
+    // shaft_diameter = 2.6-.1;
     shaft_len = 2+1.5;
     union(){
         cylinder(h=head_thickness,d=head_diameter,center=true,$fn=6);
@@ -130,29 +48,23 @@ module pi_mount_pin(){
     }
 }
 
-
 module battery_mount(){
 
     // a tube we can intersect with something else to stick them together,
-    // include a modeled in end and retention ring
+
     batt_diameter = 27;
     batt_len = 106.9;
     wall_thickness = 2.5;
     batt_face_clear_dist = 75;
-    // union(){
-    //     translate([0,0,wall_thickness/2])ring(id=batt_diameter+looseness-wall_thickness,od=batt_diameter+looseness,height=wall_thickness,$fn=100);
-    //     translate([0,0,(batt_len+looseness+wall_thickness*2)/2])ring(id=batt_diameter+looseness,od=batt_diameter+looseness+wall_thickness,height=batt_len+looseness*2+wall_thickness*2,%fn=100);
-    // }
-    // this one includes the retention for a screw on bulkhead plate
+ 
     union(){
         translate([0,0,-wall_thickness])linear_extrude(batt_len+wall_thickness)circle(d=batt_diameter+wall_thickness*2,$fn=circle_res_high);
     }
-    // this one doesn't include the retention for a printed in bulkhead plate
-    // }
+
 }
 
 module battery_relief(){
-    batt_diameter = 27+1;
+    batt_diameter = 27+.5;
     batt_len = 106.9+1;
     batt_face_inset = 2.5;
     batt_face_clear_dist = 75;
@@ -163,6 +75,7 @@ module battery_relief(){
     //chamfer for print overhang
     translate([0,0,-1])cylinder(h=1,d1=batt_diameter-batt_face_inset*2,d2=batt_diameter,$fn=circle_res_high);
 }
+
 module rtl_relief(){
     rtl_height=14.5;
     rtl_width=17.3;
@@ -172,6 +85,7 @@ module rtl_relief(){
     lock_washer=1;
     sma_bare_threads_diameter=6.5;
     sma_connector_diameter=7.8;
+    sma_connector_max_diameter=9+0.75;
     rtl_to_bulkhead_external=34.3;
     rtl_to_bulkhead=rtl_to_bulkhead_external-bulkhead_thickness;
     rtl_to_connector=6.7;
@@ -180,7 +94,7 @@ module rtl_relief(){
     bulkhead_dist_play=1.5; // makes the square area for the rtl a little closer to the bulkhead
     translate([0,0,-bulkhead_dist_play])linear_extrude(rtl_len+looseness*2+50)square(size=[rtl_height+looseness*2, rtl_width+looseness*2], center=true);
     // sma via
-    translate([0,0,-sma_bare_threads_len])linear_extrude(sma_bare_threads_len)circle(d=sma_bare_threads_diameter+looseness,center=true,$fn=circle_res_high);
+    translate([0,0,-sma_bare_threads_len])linear_extrude(sma_bare_threads_len)circle(d=sma_connector_max_diameter,center=true,$fn=circle_res_high);
     // clear area to access sma connector, add slope to help printer overhang
     translate([0,0,-rtl_to_bulkhead])linear_extrude(rtl_to_bulkhead-overhang_z-sma_bare_threads_len)hull(){    
             circle(d=rtl_width,$fn=circle_res_low);
@@ -203,22 +117,22 @@ module rtl_relief(){
 
 }
 module pi_board_shape(){
-    minkowski_diameter=7;
-    base_len=65;
-    base_width=30;
+    minkowski_diameter=7+0.3;
+    base_len=65+1.75;//z compression :C
+    base_width=30+1;
     minkowski(){
         circle(d=minkowski_diameter,$fn=circle_res_high);
         square([base_len-minkowski_diameter,base_width-minkowski_diameter]);
     }
 }
 module pi_relief(){
-    minkowski_diameter=6;
-    base_len=65;
-    base_width=30;
+
+    base_len=65+1.75;
+    base_width=30+1;
     hdmi_port_offset=12.4;
     usb_port_offset=41.4;
     power_port_offset=54;
-    via_inset=3.5;
+    via_inset=(7+0.3)/2;
     lift_pad_radius=4.4;
     height=10;
     bottom_clear_height=.5;
@@ -233,9 +147,9 @@ module pi_relief(){
     usb_housing_standoff = 3;
     cable_channel_len=base_len+30;
     cable_channel_width = cable_min_width-usb_housing_standoff;
-    cable_channel_height=21;
-    usb_access_height = 10;
-    usb_access_width = 12.3;
+    cable_channel_height=24;
+    usb_access_height = 18;
+    usb_access_width = 12.6;
     hdmi_access_width = 16;
     // area for stuff on bottom
     linear_extrude(bottom_clear_height)difference(){
@@ -276,14 +190,14 @@ module pi_relief(){
     button_stem_len = 14; //includes some space for the wires... but this isn't really lined up with the bulkhead...:C
     translate([base_len-via_inset,base_width+usb_housing_standoff-via_inset+button_stem_diameter/2+(cable_channel_width-button_stem_diameter),-usb_access_height/2+board_thickness+button_stem_diameter/2])rotate([0,90,0])linear_extrude(button_stem_len*2)circle(d=button_stem_diameter,$fn=circle_res_high);
     // led through bulkhead lines up with cable channel
-    led_diameter = 5;
+    led_diameter = 5.2;
     led_collar_diameter = 5.5;
-    translate([base_len-via_inset,base_width+usb_housing_standoff-via_inset+led_diameter/2+1,-usb_access_height/2+board_thickness+button_stem_diameter+led_diameter-2])rotate([0,90,0])linear_extrude(button_stem_len*2)circle(d=led_diameter,$fn=circle_res_high);
+    translate([base_len-via_inset,base_width+usb_housing_standoff-via_inset+led_diameter/2+1,-usb_access_height/2+board_thickness+button_stem_diameter+led_diameter])rotate([0,90,0])linear_extrude(button_stem_len*2)circle(d=led_diameter,$fn=circle_res_high);
 }
 
 module component_reliefs(){
     //line these up so they don't interfere with eachother
-    translate([44,-8,16])pi_relief();
+    translate([42.5,-8,17.3])pi_relief();
     translate([.5,1.6,2])rotate([0,90,0])battery_relief();
     translate([76.3,29,-2])rotate([-90,0,180])rotate([0,90,0])rtl_relief();
 }
@@ -300,15 +214,15 @@ module component_shadow(){
 }
 
 module component_container(){
-    linear_extrude(69.5)minkowski(){
-        square([36.5,45]);
+    linear_extrude(70)minkowski(){
+        square([37.5,45]);
         circle(r=5,$fn=circle_res_high);
     }
     // translate([10,10,0])linear_extrude(109)circle(d=30);
 }
 module bulkhead_plate(){
     linear_extrude(bulkhead_thickness)minkowski(){
-        square([36.5,45]);
+        square([37.5,45]);
         circle(r=5,$fn=circle_res_high);        
     }
 }
@@ -337,17 +251,30 @@ module component_assembly(bulkhead_bool){
 
 
 module case(){
-    linear_extrude(142)difference(){
-        minkowski(){
-            square([31,45]);
-            circle(r=7,$fn=circle_res_high);
+    internal_case_len = 160;
+    bottom_thickness = 2;
+    component_assembly_len = 73;
+    usb_bulkhead_diameter = 23.8+.5;
+    difference(){
+        linear_extrude(internal_case_len+bottom_thickness)minkowski(){
+            square([37.5,45]);
+            circle(r=6.65,$fn=circle_res_high);
         }
-        minkowski(){
-            square([31,45]);
-            circle(r=5.3,$fn=circle_res_high);
+        union(){
+            linear_extrude(internal_case_len)minkowski(){
+                square([37.5,45]);
+                circle(r=5.15,$fn=circle_res_high);        
+            }
+            translate([37.5/2,45/2,0])linear_extrude(internal_case_len+bottom_thickness)circle(d=usb_bulkhead_diameter);
+            // translate([-10,-10,142])rotate([5,0,0])linear_extrude(10)square([70,70]);
         }
-    // bottom with port for usb bulkhead offset to open side
     }
+    // a bump to stop the internal piece
+    translate([16,48,component_assembly_len])difference(){
+        linear_extrude(3)square([5,3]);
+        rotate([45,0,0])linear_extrude(5)square([5,5]);
+    }
+    // bottom with port for usb bulkhead offset to open side
     // shroud + ports for sma bulkhead, usb bulkhead, led(s), button
 }
 component_assembly(true);
@@ -362,6 +289,5 @@ component_assembly(true);
 // assembly_internals_case();
 // pi_mount();
 // translate([-10,-10,0])pi_mount_pin();
-// rubber_band_hook();
 //battery_mount();
 // rtl_mount();
