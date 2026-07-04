@@ -6,5 +6,7 @@
 *.pt
 *.pyc
 *.log
+*.stl
+*.3mf
 */venv/*
 
