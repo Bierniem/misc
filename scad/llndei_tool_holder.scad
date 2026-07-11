@@ -60,7 +60,7 @@ extension_len = 75+touch_tolerance;
 extension_socket_diameter = 12.4+touch_tolerance;
 extension_socket_len = 15+touch_tolerance;
 extension_body_diameter = 8.2+touch_tolerance;
-extension_square_diameter = 8.4+touch_tolerance;
+extension_square_diameter = 8.5+touch_tolerance;
 extension_square_len = 8;
 
 bit_len = 25.6;
@@ -95,7 +95,7 @@ module ratchet(positive,negative){
                 circle(d=ratchet_button_diameter);
             }
             // square bit/drive
-            translate([0,-ratchet_head_depth/2+ratchet_head_depth_with_selector-ratchet_head_depth,ratchet_len-ratchet_handle_to_drive-extension_square_diameter/2])rotate([90,0,0])
+            translate([0,-ratchet_head_depth/2,ratchet_len-ratchet_handle_to_drive-extension_square_diameter/2])rotate([90,0,0])
             linear_extrude(ratchet_head_depth_with_button_and_square-ratchet_head_depth_with_button)hull(){
                 circle(d=extension_square_diameter);
             }
@@ -140,7 +140,7 @@ module extension(positive,negative){
         color("red",.2){
             translate([0,0,0])linear_extrude(extension_socket_len)circle(d=extension_socket_diameter);
             translate([0,0,extension_socket_len])linear_extrude(extension_len-extension_socket_len-extension_square_len)circle(d=extension_body_diameter);
-            translate([0,0,extension_len-extension_square_len])linear_extrude(extension_square_len)circle(d=extension_square_diameter,$fn=4);
+            translate([0,0,extension_len-extension_square_len])linear_extrude(extension_square_len)circle(d=extension_square_diameter);
         }
     }
 }
@@ -212,7 +212,7 @@ module stuff_arranged(parts,clearance,container,container_top){
                     translate([-45,30,142])rotate([90,0,0])linear_extrude(31)square([80,5]);
                 }
                 // shape the outside of the case
-                translate([-68,0,150])mirror([0,0,1])slide_top_case_blank(top=false,bottom=true,length=150,width=72,depth=36,minkowski_diameter=5,top_thickness=2);
+                translate([-68,0,150])mirror([0,0,1])slide_top_case_blank(top=false,bottom=true,length=150,width=72,depth=36,minkowski_diameter=5,top_thickness=2,top_looseness=0,stiff_rib_len=5,stiff_rib_thickness=2);
                 }
             stuff_arranged(parts=false,clearance=true,container=false);
         }
@@ -220,7 +220,7 @@ module stuff_arranged(parts,clearance,container,container_top){
     if(container_top){
         // add volumes to hold the parts
         difference(){
-            translate([-68,0,150])mirror([0,0,1])slide_top_case_blank(top=true,bottom=false,length=150,width=72,depth=36,minkowski_diameter=5,top_thickness=2);
+            translate([-68,0,150])mirror([0,0,1])slide_top_case_blank(top=true,bottom=false,length=150,width=72,depth=36,minkowski_diameter=5,top_thickness=2,top_looseness=0,stiff_rib_len=5,stiff_rib_thickness=1);
             stuff_arranged(parts=true,clearance=false,container=false);
         }
     }
@@ -231,9 +231,11 @@ module stuff_arranged(parts,clearance,container,container_top){
 
 // box_bottom();
 // hull(){
+// ratchet(true);
 rotate([90,0,0]){
     stuff_arranged(parts=false,clearance=false,container=true,container_top=false);
-    translate([0,0,-100])stuff_arranged(parts=false,clearance=false,container=false,container_top=true);
+    translate([0,-50,0])
+    stuff_arranged(parts=false,clearance=false,container=false,container_top=true);
 }
 // slide_top_case_blank(top=true,bottom=false,length=150,width=72,depth=32.5,minkowski_diameter=5,top_thickness=2);
 // translate([0,.3,0])slide_top_case_blank(top=true,bottom=false,length=150,width=72,depth=32.5,minkowski_diameter=5,top_thickness=2);

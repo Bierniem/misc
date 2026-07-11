@@ -1,3 +1,10 @@
+/*
+modify the design so the top can slide into the bottom upside down too? so that it will stay together while open
+
+*/
+
+
+
 module slot_with_catch_bump(length,width,height,with_bump=true)
 {
     overhang_droop = width/5;
@@ -8,12 +15,12 @@ module slot_with_catch_bump(length,width,height,with_bump=true)
         }      
         if(with_bump)
         {
-            translate([width*1.5,height,width*3])rotate([90,0,0])linear_extrude(height)circle(r=width);
+            translate([width*1.5,height,length/1.2])rotate([90,0,0])linear_extrude(height)circle(r=width);
         }
     }
 }
 
-module slide_top_case_blank(top,bottom,length,width,depth,minkowski_diameter,top_thickness,top_looseness=.5){
+module slide_top_case_blank(top,bottom,length,width,depth,minkowski_diameter,top_thickness,top_looseness=.1,stiff_rib_len=0,stiff_rib_thickness=0){
     if(bottom){
         difference(){
             linear_extrude(length)minkowski(){
@@ -39,16 +46,44 @@ module slide_top_case_blank(top,bottom,length,width,depth,minkowski_diameter,top
     }
     if(top){
         difference(){
-            linear_extrude(length){
-                minkowski(){
-                    // square([width-minkowski_diameter,depth-minkowski_diameter]);
-                    polygon([
-                        [0,0],
-                        [width-minkowski_diameter,0],
-                        [width-minkowski_diameter,depth-minkowski_diameter*2],
-                        [0,depth-minkowski_diameter*2],,
-                        ]);
-                    circle(d=minkowski_diameter);
+            union(){
+                linear_extrude(length){
+                    minkowski(){
+                        // square([width-minkowski_diameter,depth-minkowski_diameter]);
+                        polygon([
+                            [0,0],
+                            [width-minkowski_diameter,0],
+                            [width-minkowski_diameter,depth-minkowski_diameter*2],
+                            [0,depth-minkowski_diameter*2],,
+                            ]);
+                        circle(d=minkowski_diameter);
+                    }
+                }
+                //stiffening rib
+                linear_extrude(stiff_rib_len){
+                    minkowski(){
+                        // square([width-minkowski_diameter,depth-minkowski_diameter]);
+                        polygon([
+                            [0,0],
+                            [width-minkowski_diameter,0],
+                            [width-minkowski_diameter,depth-minkowski_diameter*2],
+                            [0,depth-minkowski_diameter*2],,
+                            ]);
+                        circle(d=minkowski_diameter+stiff_rib_thickness);
+                    }
+                }
+                //mirror the rib on the other end
+                translate([0,0,length-stiff_rib_len])linear_extrude(stiff_rib_len){
+                    minkowski(){
+                        // square([width-minkowski_diameter,depth-minkowski_diameter]);
+                        polygon([
+                            [0,0],
+                            [width-minkowski_diameter,0],
+                            [width-minkowski_diameter,depth-minkowski_diameter*2],
+                            [0,depth-minkowski_diameter*2],,
+                            ]);
+                        circle(d=minkowski_diameter+stiff_rib_thickness);
+                    }
                 }
             }
         slide_top_case_blank(bottom=true,top=false,length=length,width=width,depth=depth,minkowski_diameter=minkowski_diameter+top_looseness,top_thickness=top_thickness-top_looseness,top_looseness=0);
@@ -56,5 +91,5 @@ module slide_top_case_blank(top,bottom,length,width,depth,minkowski_diameter,top
     }
 }
 $fn=100;
-color("yellow",.1)slide_top_case_blank(bottom=false,top=false,length=25,width=20,depth=15,minkowski_diameter=2,top_thickness=1,top_looseness=.2);
-color("red",.1)slide_top_case_blank(bottom=true,top=false,length=25,width=20,depth=15,minkowski_diameter=2,top_thickness=1,top_looseness=.2);
+color("yellow",.1)slide_top_case_blank(bottom=false,top=false,length=25,width=20,depth=15,minkowski_diameter=2,top_thickness=1,top_looseness=.1);
+color("red",.1)slide_top_case_blank(bottom=true,top=false,length=25,width=20,depth=15,minkowski_diameter=2,top_thickness=1,top_looseness=.1);

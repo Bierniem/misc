@@ -37,8 +37,20 @@ if there's space(width) to get the sma closer to the bottom
 * design around 90 degree usbc adapter instead
     * done
 * add spring button to hold shell to assembly
-
+After first petg print... 
+* reduce the depth of the grips 
+    * done 2mm->1mm
+* make the usb 90degree holder tight against the aluminum part male part for better retention and no tiny bridge
+    * done
+* widen the usb access through the case
+    * done 8.3->8.5mm
+* shorten the case when I know how much shorter the custom usb will allow
+* add ziptie holddown for the usb 90 and make it slightly looser
+    # 1 ziptie for both!
+* add ziptie holddown for the battery and make it slightly looser
+    * 1 ziptie for both!
 */
+
 
 
 
@@ -76,7 +88,7 @@ module battery_relief(){
     //minimum clear area of face
     translate([0,0,-batt_face_clear_dist/2])linear_extrude(batt_face_clear_dist)circle(d=batt_diameter-batt_face_inset*2,$fn=circle_res_high);
     // body of battery
-    linear_extrude(batt_len)circle(d=batt_diameter,$fn=circle_res_high);
+    linear_extrude(batt_len)circle(d=batt_diameter,$fn=circle_res_high*2);
     //chamfer for print overhang
     translate([0,0,-1])cylinder(h=1,d1=batt_diameter-batt_face_inset*2,d2=batt_diameter,$fn=circle_res_high);
 }
@@ -145,7 +157,7 @@ module pi_relief(){
     height=10;
     bottom_clear_height=.5;
     board_thickness=1.3;
-    clear_height_above_board=20;
+    clear_height_above_board=12;
     looseness=.1;
     pin_len=3;
     pin_radius=1.3;
@@ -153,10 +165,11 @@ module pi_relief(){
     ribbon_guard_overhang=2.5;
     cable_min_width = 50-base_width;
     usb_housing_standoff = 2;
-    cable_channel_len=base_len+30;
+    cable_channel_len=base_len+18+7;
     cable_channel_width = cable_min_width-usb_housing_standoff;
     cable_channel_height=30;
-    usb_access_height = 18;
+    cable_channel_offset_down = 5;
+    usb_access_height = 7;
     usb_access_width = 12.6;
     hdmi_access_width = 16;
     // area for stuff on bottom
@@ -186,7 +199,9 @@ module pi_relief(){
     translate([-ribbon_guard_overhang-via_inset,via_inset/2,bottom_clear_height+board_thickness])linear_extrude(clear_height_above_board)square([base_len+ribbon_guard_overhang*2,ribbon_guard_width]);
     // cable channel
     // translate([base_len-cable_channel_len-via_inset-4,base_width+cable_channel_width+usb_housing_standoff-via_inset,bottom_clear_height+board_thickness-cable_channel_height/2+cable_channel_height_extra/2-4])rotate([0,0,270])linear_extrude(cable_channel_height+cable_channel_height_extra)square([cable_channel_width+usb_housing_standoff,cable_channel_len]);
-    translate([1-cable_channel_len+base_len-via_inset,base_width+usb_housing_standoff-via_inset,-usb_access_height/2+board_thickness])linear_extrude(cable_channel_height)square([cable_channel_len,cable_channel_width]);
+    translate([2.5-cable_channel_len+base_len-via_inset,base_width+usb_housing_standoff-via_inset,-usb_access_height/2+board_thickness-cable_channel_offset_down])linear_extrude(cable_channel_height)square([cable_channel_len,cable_channel_width]);
+    // slope so it's easier to print overhangs
+    translate([-5+2.5-cable_channel_len+base_len-via_inset,base_width+usb_housing_standoff-via_inset,-usb_access_height/2+board_thickness-cable_channel_offset_down])linear_extrude(cable_channel_height)polygon([[5,0],[5,cable_channel_width],[0,cable_channel_width]]);
     // usb access
     translate([-via_inset+base_len-usb_port_offset-usb_access_width/2,base_width-via_inset,-usb_access_height/2+board_thickness])linear_extrude(usb_access_height+5)square(size=[usb_access_width,usb_housing_standoff]);
     // power access
@@ -196,24 +211,24 @@ module pi_relief(){
     // button through bulkhead lines up with cable channel
     button_stem_diameter = 13.2+.3;
     button_stem_len = 14; //includes some space for the wires... but this isn't really lined up with the bulkhead...:C
-    translate([base_len-via_inset,-1.5+base_width+usb_housing_standoff-via_inset+button_stem_diameter/2+(cable_channel_width-button_stem_diameter),-usb_access_height/2+board_thickness+button_stem_diameter/2])rotate([0,90,0])linear_extrude(button_stem_len*2)circle(d=button_stem_diameter,$fn=circle_res_high);
+    translate([base_len-via_inset,-1.5+base_width+usb_housing_standoff-via_inset+button_stem_diameter/2+(cable_channel_width-button_stem_diameter),-usb_access_height/2+board_thickness+button_stem_diameter/2-cable_channel_offset_down+1])rotate([0,90,0])linear_extrude(button_stem_len*2)circle(d=button_stem_diameter,$fn=circle_res_high);
     // led through bulkhead lines up with cable channel
-    led_diameter = 5.2;
+    led_diameter = 5.3;
     led_collar_diameter = 5.5;
-    translate([base_len-via_inset,base_width+usb_housing_standoff-via_inset+led_diameter/2+1,-usb_access_height/2+board_thickness+button_stem_diameter+led_diameter])rotate([0,90,0])linear_extrude(button_stem_len*2)circle(d=led_diameter,$fn=circle_res_high);
+    translate([base_len-via_inset,base_width/3-via_inset+led_diameter/2+1,board_thickness+led_diameter+1])rotate([0,90,0])linear_extrude(button_stem_len*2)circle(d=led_diameter,$fn=circle_res_high);
 }
 
 module usb_90_degree(){
-    len_a = 22.5 +.5;
-    width_a = 12.6 +.5;
-    height_a = 6.6 +.5;
+    len_a = 22.5 +.6;
+    width_a = 12.6 +.6;
+    height_a = 6.6 +.6;
     gap_to_connector=1.5;
-    len_b = 8 + height_a/2 +.5;
-    width_b = 10.5 +.5;
-    height_b = 5.3 +.5;
-    usbc_height = 2.5 +.5;
-    usbc_width = 8.3 +.5;
-    connector_height = 7.2 +.5;
+    len_b = 8 + height_a/2 -.1;
+    width_b = 10.5 +.6;
+    height_b = 5.3 +.6;
+    usbc_height = 2.5 +.6;
+    usbc_width = 8.5 +.6;
+    connector_height = 7.2 +.6;
     connector_len = 35;
 
 
@@ -271,18 +286,18 @@ module screw_and_nut(){
     translate([0,0,-3])linear_extrude(12)circle(d=screw_diameter,$fn=circle_res_high);
 }
 
-module usb_90_degree_container(part,container){
-    len_a = 22.5 +.5;
-    width_a = 12.6 +.5;
-    height_a = 6.6 +.5;
+module usb_90_degree_container(part,container,relief){
+    len_a = 22.5 +.6;
+    width_a = 12.6 +.6;
+    height_a = 6.6 +.6;
     gap_to_connector=1.5;
     full_len_b = 14.5;
     len_b = 8 + height_a/2 +.5;
-    width_b = 10.5 +.5;
-    height_b = 5.3 +.5;
-    usbc_height = 2.5 +.5;
-    usbc_width = 8.3 +.5;
-    connector_height = 7.2 +.5;
+    width_b = 10.5 +.6;
+    height_b = 5.3 +.6;
+    usbc_height = 2.5 +.6;
+    usbc_width = 8.5 +.6;
+    connector_height = 7.2 +.6;
     connector_len = 35;
     minkowski_diameter = 2.5;
 
@@ -290,7 +305,7 @@ module usb_90_degree_container(part,container){
         difference(){
             difference(){
                 translate([0,-height_a/2,-2]){
-                    linear_extrude(len_a+2+gap_to_connector )minkowski(){
+                    linear_extrude(len_a+2+gap_to_connector)minkowski(){
                         circle(d=minkowski_diameter,$fn=circle_res_high);
                         square([width_a,full_len_b-minkowski_diameter/2],center=true);
                     }
@@ -305,16 +320,41 @@ module usb_90_degree_container(part,container){
                 }
             }
         usb_90_degree();
+        // ziptie
+        if(!relief){
+            translate([0,-9,16])linear_extrude(5)
+            difference(){
+                square([16,6],center=true);
+                minkowski(){
+                    // translate([0,2])square([10,2],center=true);
+                    polygon(points=[[-5,1],[5,1],[7,3],[-7,3]]);
+                    circle(d=minkowski_diameter,$fn=circle_res_high);
+                }
+                
+            }
+        //    translate([0,-11.5+3+.3,16])rotate([90,0,0])linear_extrude(3.3+.3)square([16,5],center=true); 
+        }
         //magnet
-        // translate([0,-9.5,17])rotate([90,0,0])linear_extrude(3.3+.3)circle(d=8+0.5);
-        translate([0,-8.5,17])rotate([90,0,0])screw_and_nut();
+        // translate([0,-11.5+1.7+.3+1.8,18])rotate([90,0,0])linear_extrude(3.3+.3)circle(d=8+0.5);
+        // cutout so the case thick section comes up higher?
+        // translate([0,-11.5+1.7+.3,18])rotate([90,0,0])linear_extrude(3.3+.3)square(16,center=true);
+        // screw and nut
+        // translate([0,-8.5,17])rotate([90,0,0])screw_and_nut();
+        }
+        // a connector since I had to move it to clear the wires
+        translate([0,-height_a/2,-20]){
+            linear_extrude(20)minkowski(){
+                circle(d=minkowski_diameter,$fn=circle_res_high);
+                square([width_a,full_len_b-minkowski_diameter/2],center=true);
+            }
         }
     }
     if(part){
         color("red",.1)usb_90_degree();
-        //magnet
-        // translate([0,-9.5,17])rotate([90,0,0])color("red",.1)linear_extrude(3.3+.3)circle(d=8+0.5);
-        translate([0,-8.5,17])rotate([90,0,0])color("red",.1)screw_and_nut();
+        //magnet and step
+        // translate([0,-11.5+1.7+1.8,18])rotate([90,0,0])linear_extrude(3.3+.3)circle(d=8+0.5);
+        // translate([0,-8,18])rotate([90,0,0])linear_extrude(3.3+.3)square(16,center=true);
+        // translate([0,-8.5,17])rotate([90,0,0])color("red",.1)screw_and_nut();
     }
 } 
 
@@ -338,14 +378,14 @@ module component_shadow(){
 
 module component_container(){
     linear_extrude(73)minkowski(){
-        square([37.5,45]);
+        square([29.5,45]);
         circle(r=5,$fn=circle_res_high);
     }
     // translate([10,10,0])linear_extrude(109)circle(d=30);
 }
 module bulkhead_plate(){
     linear_extrude(bulkhead_thickness)minkowski(){
-        square([37.5,45]);
+        square([29.5,45]);
         circle(r=5,$fn=circle_res_high);        
     }
 }
@@ -353,15 +393,22 @@ module component_assembly(parts,containers){
     
     translate([9,9.5,bulkhead_thickness])difference(){
         union(){
+            
             translate([-9,-9.5,0])component_container();
             translate([-9,-9.5,-bulkhead_thickness])bulkhead_plate();
             translate([0,0,107.5])rotate([0,90,0])component_min_container();    
-            translate([22.1,13.5,73])rotate([0,0,90])usb_90_degree_container(parts,containers);
+            translate([14.08,19,93])rotate([0,0,90])usb_90_degree_container(parts,containers);
 
         }
         translate([0,0,107.5])rotate([0,90,0])component_reliefs();
+        // dimples for the case to hold
+        translate([5,42.9-2,5])sphere(d=5,$fn=circle_res_high);
+        translate([5,-16.9+2,5])sphere(d=5,$fn=circle_res_high);
     }
+    // a little insert to support the usb thing
+    //translate([9,9.5,bulkhead_thickness])translate([10,18.8,73.2])rotate([0,90,0])linear_extrude(15)polygon([[0,0],[0,8],[1,8],[3,0]]);
     
+
 }
 
 
@@ -370,39 +417,63 @@ module case(negatives,positives){
     bottom_thickness = 2;
     component_assembly_len = 73;
     usb_bulkhead_diameter = 23.8+.5;
+    case_square_size = [29.5,45];
+    case_outer_minkowski_diameter = 6.65;
     if(positives){
         color("yellow",.1)
         difference(){
-            translate([6.65,6.65,0])linear_extrude(internal_case_len+bottom_thickness)minkowski(){
-                square([37.5,45]);
-                circle(r=6.65,$fn=circle_res_high);
+            union(){
+                // the normal case, will add features for grippyness
+                translate([6.65,6.65,0])linear_extrude(internal_case_len+bottom_thickness)minkowski(){
+                    square(case_square_size);
+                    circle(r=6.65,$fn=circle_res_high);
+                }
+
             }
-            
             union(){
                 //hollow inside for assembly
                 translate([6.65,6.65,0])linear_extrude(internal_case_len)minkowski(){
-                    square([37.5,45]);
+                    square(case_square_size);
+
+                    circle(r=5.15-1.5,$fn=circle_res_high);        
+                }
+                translate([6.65,6.65,-internal_case_len+component_assembly_len+13.2+35])linear_extrude(internal_case_len)minkowski(){
+                    // square([29.5,45]);
+                    // let the short sides touch the component assembly in the middle
+                    polygon([
+                        [0,0],
+                        [case_square_size[0]/2-6,0],
+                        [case_square_size[0]/2-5,1],
+                        [case_square_size[0]/2+5,1],
+                        [case_square_size[0]/2+6,0],
+                        [29.5,0],
+                        [29.5,45],
+                        // [case_square_size[0]/2+6,45],
+                        // [case_square_size[0]/2+5,43.5],
+                        // [case_square_size[0]/2-5,43.5],
+                        // [case_square_size[0]/2-6,45],
+                        [0,45]
+                        ]);
                     circle(r=5.15,$fn=circle_res_high);        
                 }
-                translate([6.65,6.65,0])component_assembly(parts=true,containers=false);
-                // hollow inside for wires
-                // translate([1,1,component_assembly_len])linear_extrude(internal_case_len-component_assembly_len)minkowski(){
-                //     square([35.5,43]);
-                //     circle(r=5.15,$fn=circle_res_high);        
-                // }
-                // usb access
-                    //do this in the compontents
-                // rotate([0,0,0])translate([37.5/2,6.4,component_assembly_len])usb_90_degree();
+                translate([6.65,6.65,0])component_assembly(parts=true,containers=true);
                 // grippyness
+
+                total_case_x = case_square_size[0]+case_outer_minkowski_diameter;
+
+                for(i = [total_case_x/5:total_case_x/5:total_case_x]){
+                    echo(str("i", i));
+                    translate([i,0,3])linear_extrude(internal_case_len-5)square([2,1],center=true);
+                }
+                for(i = [total_case_x/5:total_case_x/5:total_case_x]){
+                    echo(str("i", i));
+                    translate([i,case_square_size[1]+case_outer_minkowski_diameter*2,3])linear_extrude(internal_case_len-5)square([2,1],center=true);
+                }
                 // for(i=[0:1:20])linear_extrude(internal_case_len-component_assembly_len)translate([6.65,3,0])square([1,3]);
                 // translate([-10,-10,142])rotate([5,0,0])linear_extrude(10)square([70,70]);
             }
-        }
-        // a bump to stop the internal piece
-        translate([16,48,component_assembly_len + bulkhead_thickness])difference(){
-            linear_extrude(3)square([5,3]);
-            rotate([45,0,0])linear_extrude(5)square([5,5]);
-        }
+        }  
+
     }
     if(negatives){
         color("red",.2)translate([6.65,6.65,0])component_assembly(parts=true,containers=false);
@@ -412,7 +483,7 @@ module case(negatives,positives){
 }
 
 // translate([6.65,6.65,-5])component_assembly(parts=false,containers=true);
-// usb_90_degree();
+// translate([0,0,100])usb_90_degree();
 // difference(){
 // usb_90_degree_container(part=true,container=true);
 //     union(){
@@ -421,7 +492,13 @@ module case(negatives,positives){
 // }
 //spring_button();
 // component_reliefs();
+translate([70,0,0])component_assembly(parts=false,containers=true);
+// translate([0,0,component_assembly_len])linear_extrude(internal_case_len-component_assembly_len)square([1,3]);
 case(negatives=false,positives=true);
+
+
+                
+     
 // difference(){
 //     battery_mount();
 //     battery_relief();
