@@ -2,6 +2,17 @@
 shiratsuyu... yuudachi
 
 // maybe try drawing hull lines and extruding them?
+
+* maybe add little hole pokes for railings? and wires and stuff?
+* maybe add indentations for scuppers
+* add detail to stacks
+* remake the tower
+* setup to resin print some sailors?
+* make gearbox
+* plan rudder servo(s)
+* gun servos?
+* the hollowing should probably be really significant so that the hull is reduced to shell and bulkheads. I don't really want much infil since I don't trust it to stay completely watertight and I don't want the infil getting waterlogged...
+* plan the build plate cuts around the deck features so the deck plates make sense and don't cross cuts include dowel pins and passages through bulkheads
 */ 
 use <rc_stuff.scad>;
 
@@ -678,8 +689,8 @@ module turret_1(){
         linear_extrude(7)from_above();
         translate([5.25,0,0])rotate([0,-90,0])linear_extrude(5.25*2)from_side();
     }
-    translate([1,1,6])rotate([90,180,0])turret_gun(barrel=false);
-    translate([-1,1,6])rotate([90,180,0])turret_gun(barrel=false);
+    translate([1,1,6])rotate([90,180,0])turret_gun(barrel=true);
+    translate([-1,1,6])rotate([90,180,0])turret_gun(barrel=true);
 }
 
 module turret_gun(barrel=true){
@@ -1008,7 +1019,7 @@ module turret_2(){
     }
     linear_extrude(.5)circle(d=6.5);
     body();
-    translate([0,1.5,2])rotate([-90,0,0])turret_gun(barrel=false);
+    translate([0,1.5,2])rotate([-90,0,0])turret_gun(barrel=true);
     sight();
 }
 
@@ -1222,21 +1233,22 @@ module motor(){
     translate([0,0,19])linear_extrude(4.5)circle(d=8.5);
     translate([0,0,19+4.5])linear_extrude(10)circle(d=2.3);
 }
-
-// main_hull();
-scale(scale_1_144)hull_hollowed(a=true);
-servo_9g();
-translate([2.5,56,-19-15+7])motor();
-translate([0,50,0])gear_box();
-// translate([0,10.5,226-8])rotate([-90,0,0])turret_1();
-// translate([0,6.5,44])rotate([-90,180,0])turret_1();
-// translate([0,10,195])rotate([-90,90,0])tower_1();
-// translate([0,6.5,174])rotate([-90,0,0])building();
-// translate([0,6.5,165])rotate([-90,180,0])stack_1();
-// translate([0,9,141])rotate([-90,180,0])torpedo_turret();
-// translate([0,6.5,129])rotate([-90,180,0])tower_2();
-// translate([0,6.5,102])rotate([-90,180,0])torpedo_turret();
-// translate([0,10.5,190])rotate([-90,180,0])life_boats();
-// translate([0,6.5,169])rotate([-90,180,0])life_boats(); // these should be changed to ships boats
-// color("red")translate([-7.5,6.5,92])rotate([0,-90,-90])tower_3();
-// translate([0,6.5,60])rotate([90,0,180])turret_2();
+scale(scale_1_144){
+    main_hull();
+    // hull_hollowed(a=true);
+    // translate([0,10.5,226-8])rotate([-90,0,0])turret_1();
+    // translate([0,6.5,44])rotate([-90,180,0])turret_1();
+    // translate([0,10,195])rotate([-90,90,0])tower_1();
+    // translate([0,6.5,174])rotate([-90,0,0])building();
+    // translate([0,6.5,165])rotate([-90,180,0])stack_1();
+    // translate([0,9,141])rotate([-90,180,0])torpedo_turret();
+    // translate([0,6.5,129])rotate([-90,180,0])tower_2();
+    // translate([0,6.5,102])rotate([-90,180,0])torpedo_turret();
+    // translate([0,10.5,190])rotate([-90,180,0])life_boats();
+    // translate([0,6.5,169])rotate([-90,180,0])life_boats(); // these should be changed to ships boats
+    // color("red")translate([-7.5,6.5,92])rotate([0,-90,-90])tower_3();
+    // translate([0,6.5,60])rotate([90,0,180])turret_2();
+}
+// servo_9g();
+// translate([2.5,56,-19-15+7])motor();
+// translate([0,50,0])gear_box();
