@@ -49,6 +49,7 @@ After first petg print...
     # 1 ziptie for both!
 * add ziptie holddown for the battery and make it slightly looser
     * 1 ziptie for both!
+* move the ziptie tighter against the battery and the usb ... I accidentally broke the last one :C
 */
 
 
@@ -228,8 +229,8 @@ module usb_90_degree(){
     height_b = 5.3 +.6;
     usbc_height = 2.5 +.6;
     usbc_width = 8.5 +.6;
-    connector_height = 7.2 +.6;
-    connector_len = 35;
+    connector_height = 7.2 +.8;
+    connector_len = 25;
 
 
     //the aluminum part a
@@ -246,9 +247,9 @@ module usb_90_degree(){
         }
         //the connector plugged into b
 
-        translate([0,0,len_b])linear_extrude(connector_len)hull(){
-            translate([-(width_a-connector_height)/2,0,0])circle(d=connector_height,$fn=circle_res_high);
-            translate([(width_a-connector_height)/2,0,0])circle(d=connector_height,$fn=circle_res_high);
+        translate([0,0,len_b-1])linear_extrude(connector_len)hull(){
+            translate([-(width_a-connector_height+.2)/2,0,0])circle(d=connector_height,$fn=circle_res_high);
+            translate([(width_a-connector_height+.2)/2,0,0])circle(d=connector_height,$fn=circle_res_high);
         }
     }
     //the connector plugged into a
@@ -291,14 +292,14 @@ module usb_90_degree_container(part,container,relief){
     width_a = 12.6 +.6;
     height_a = 6.6 +.6;
     gap_to_connector=1.5;
-    full_len_b = 14.5;
+    full_len_b = 13;
     len_b = 8 + height_a/2 +.5;
     width_b = 10.5 +.6;
     height_b = 5.3 +.6;
     usbc_height = 2.5 +.6;
     usbc_width = 8.5 +.6;
     connector_height = 7.2 +.6;
-    connector_len = 35;
+    connector_len = 25;
     minkowski_diameter = 2.5;
 
     if(container){
@@ -322,7 +323,7 @@ module usb_90_degree_container(part,container,relief){
         usb_90_degree();
         // ziptie
         if(!relief){
-            translate([0,-9,16])linear_extrude(5)
+            translate([0,-9,13])linear_extrude(5)
             difference(){
                 square([16,6],center=true);
                 minkowski(){
@@ -388,6 +389,10 @@ module bulkhead_plate(){
         square([29.5,45]);
         circle(r=5,$fn=circle_res_high);        
     }
+    linear_extrude(2)minkowski(){
+        square([29.5,45]);
+        circle(r=6.66,$fn=circle_res_high);        
+    }
 }
 module component_assembly(parts,containers){
     
@@ -397,7 +402,7 @@ module component_assembly(parts,containers){
             translate([-9,-9.5,0])component_container();
             translate([-9,-9.5,-bulkhead_thickness])bulkhead_plate();
             translate([0,0,107.5])rotate([0,90,0])component_min_container();    
-            translate([14.08,19,93])rotate([0,0,90])usb_90_degree_container(parts,containers);
+            translate([14.78,17.8,93])rotate([0,0,90])usb_90_degree_container(parts,containers);
 
         }
         translate([0,0,107.5])rotate([0,90,0])component_reliefs();
@@ -413,7 +418,7 @@ module component_assembly(parts,containers){
 
 
 module case(negatives,positives){
-    internal_case_len = 160;
+    internal_case_len = 150;
     bottom_thickness = 2;
     component_assembly_len = 73;
     usb_bulkhead_diameter = 23.8+.5;
@@ -463,11 +468,11 @@ module case(negatives,positives){
 
                 for(i = [total_case_x/5:total_case_x/5:total_case_x]){
                     echo(str("i", i));
-                    translate([i,0,3])linear_extrude(internal_case_len-5)square([2,1],center=true);
+                    translate([i,0,5])linear_extrude(internal_case_len-7)square([2,1],center=true);
                 }
                 for(i = [total_case_x/5:total_case_x/5:total_case_x]){
                     echo(str("i", i));
-                    translate([i,case_square_size[1]+case_outer_minkowski_diameter*2,3])linear_extrude(internal_case_len-5)square([2,1],center=true);
+                    translate([i,case_square_size[1]+case_outer_minkowski_diameter*2,5])linear_extrude(internal_case_len-7)square([2,1],center=true);
                 }
                 // for(i=[0:1:20])linear_extrude(internal_case_len-component_assembly_len)translate([6.65,3,0])square([1,3]);
                 // translate([-10,-10,142])rotate([5,0,0])linear_extrude(10)square([70,70]);
@@ -492,7 +497,7 @@ module case(negatives,positives){
 // }
 //spring_button();
 // component_reliefs();
-translate([70,0,0])component_assembly(parts=false,containers=true);
+translate([70,6.65,0])component_assembly(parts=false,containers=true);
 // translate([0,0,component_assembly_len])linear_extrude(internal_case_len-component_assembly_len)square([1,3]);
 case(negatives=false,positives=true);
 
