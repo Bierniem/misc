@@ -78,22 +78,14 @@ class Sudoku:
             #there is at least one unsolved field with no allowable entries
             self.retry()
             return 1
-        #if min == 1 all fields with threshprobs == 1
-        #known = threshprobs == 1
-        #known = known[...,np.newaxis]
-        #known = np.broadcast_to(known,self.probs.shape)
-        #known = known * self.probs
-        #known = known * self.probs_z_ind
-        #known = np.sum(known,axis=2)
+
 
         knownIndexes = ([i for i in np.ndindex(self.field.shape) if threshprobs[i] == 1])
         if len(knownIndexes)>0:
+            #if there are cells with only one possible value
             self.lastIndex = knownIndexes[np.random.randint(len(knownIndexes))]
             val = (self.probs_z_ind*self.probs)[self.lastIndex]
             val = val[val!=0][0]
-            #print(self.lastIndex)
-            #print(val)
-            #print(self.field.T)
             self.field[self.lastIndex] = val
             return 1
         #set the known cells
@@ -109,13 +101,10 @@ class Sudoku:
             #save the other guesses so we can go back if we get stuck
             self.field[self.lastIndex] = i    
             self.resets += [(copy.deepcopy(self.field),copy.deepcopy(self.probs),copy.deepcopy(self.lastIndex))]
-            #print(self.field.T)
             self.field[self.lastIndex] = 0
         self.retry()
-        #print('----------------')
-        #print(self.field.T)
+    
         return 1
-        #random guess
 
     def retry(self,):
         self.field,self.probs,self.lastIndex = self.resets.pop()
@@ -131,10 +120,49 @@ class MakeSudoku(Sudoku):
         return
 
     def step_back(self,):
+        raise NotImplementedError
         #remove one element such that the # of possible solutions remains 1
         #get random filled element index
         #
         return
+
+
+def demo_sudoku(limit=0):
+    sud = Sudoku()
+    count = 0
+    r = 1
+    sud.reset()
+    sud.field[np.random.randint(9),np.random.randint(9)] = np.random.randint(1,9)
+    sud.compute_probs()
+    limitCount = 0
+    bad = False
+    while True: 
+        limitCount+=1
+        if limitCount == limit:
+            print(f'generated {limitCount} sudokus!')
+            break
+        if r == -1:
+            bad= "r error"
+            break
+        elif r == 0:
+            count+=1
+            print(sud.field.T)
+            if np.sum(sud.field) != 405:
+                print('sum != 405')
+                bad="bad sum"
+                break
+            sud.reset()
+            sud.field[np.random.randint(9),np.random.randint(9)] = np.random.randint(1,9)
+            sud.compute_probs()
+        r = sud.step() 
+    if bad != False:
+        raise ValueError(bad)
+    else:
+        return True
+        
+
+def test_soduku():
+    demo_sudoku(5)
 
         
 class Conway:
@@ -155,7 +183,9 @@ class Conway:
         self.field = neighbors < 3 + neighbors>1
         return
 
-
+def demo_conway(limit = 5)
+    conway = Conway((1000,1000))
+    while True conway.step()
 
 def neighbors(field):
     #return a field of equal size to input field but with number of non zero neighbors per cell
@@ -238,26 +268,5 @@ def test_convolve():
     return
 
 if __name__ == '__main__':
-    sud = Sudoku()
-    count = 0
-    r = 1
-    sud.reset()
-    sud.field[np.random.randint(9),np.random.randint(9)] = np.random.randint(1,9)
-    sud.compute_probs()
-    while True: 
-        if r == -1:
-            break
-        elif r == 0:
-            count+=1
-            print(count)
-            print(sud.field.T)
-            if np.sum(sud.field) != 405:
-                print('sum != 405')
-                break
-            sud.reset()
-            sud.field[np.random.randint(9),np.random.randint(9)] = np.random.randint(1,9)
-            sud.compute_probs()
-        r = sud.step()
-        
 
 
