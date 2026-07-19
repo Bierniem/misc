@@ -4,15 +4,19 @@ shiratsuyu... yuudachi
 // maybe try drawing hull lines and extruding them?
 
 * maybe add little hole pokes for railings? and wires and stuff?
+    * probably just use a hot wire
 * maybe add indentations for scuppers
 * add detail to stacks
+    * done, the roundy parts on top should be wire?
 * remake the tower
 * setup to resin print some sailors?
 * make gearbox
 * plan rudder servo(s)
 * gun servos?
 * the hollowing should probably be really significant so that the hull is reduced to shell and bulkheads. I don't really want much infil since I don't trust it to stay completely watertight and I don't want the infil getting waterlogged...
-* plan the build plate cuts around the deck features so the deck plates make sense and don't cross cuts include dowel pins and passages through bulkheads
+* plan the build plate cuts around the deck features and bulkheads so the deck plates make sense and don't cross cuts include dowel pins and passages through bulkheads
+* ships boats
+    * done
 */ 
 use <rc_stuff.scad>;
 
@@ -27,25 +31,284 @@ scale_1_144 = (109.6*1000/261)/(109.6*1000/757);
 // 5mm > paper_scale
 // 5 / 1000 
 
+module px_circle(r=0,d=0){
+    if(d!=0){r=d/2;}
+    intersection(){
+        circle(r);
+        translate([0,-r,0])square(r*2);
+    }
+}
 
-hull_roundover = 0;
+module hull_2(hollow=false,deck_open=false){
+    module bottom(){
+        intersection(){
+            union(){
+                hull(){
+                    translate([0,0,8.5])hull(){
+                        translate([13.6/2-.1,8.4/2,0])linear_extrude(.1)circle(.1);
+                        translate([-13.6/2+.1,8.4/2,0])linear_extrude(.1)circle(.1);
+                    }
+                    translate([0,0,12.5])hull(){
+                        translate([15/2-1,8.4/2,0])linear_extrude(.1)px_circle(1);
+                        mirror([1,0,0])translate([15/2-1,8.4/2,0])linear_extrude(.1)px_circle(1);
+                    }
+                    translate([0,0,16.25])hull(){
+                        translate([16/2-2,8.4/2,0])linear_extrude(.1)circle(2);
+                        mirror([1,0,0])translate([16/2-2,8.4/2,0])linear_extrude(.1)circle(2);
+                    }
+                    translate([0,0,39.75])hull(){
+                        translate([19.75/2-5,8.4/2,0])linear_extrude(.1)circle(5);
+                        translate([-19.75/2+5,8.4/2,0])linear_extrude(.1)circle(5);
+                    }
+                    translate([0,0,(39.75+45)/2])hull(){
+                        translate([9.9-6,8.4/2,0])linear_extrude(.1)circle(6);
+                        translate([-9.9+6,8.4/2,0])linear_extrude(.1)circle(6);
+                    }
+                }
+                hull(){
+                    translate([0,0,(39.75+45)/2])hull(){
+                        translate([9.9-6,8.4/2,0])linear_extrude(.1)circle(6);
+                        translate([-9.9+6,8.4/2,0])linear_extrude(.1)circle(6);
+                    }
+                    translate([0,0,45])hull(){
+                        translate([9.9-8.4,8.4/2,0])linear_extrude(.1)circle(8.4);
+                        translate([-9.9+8.4,8.4/2,0])linear_extrude(.1)circle(8.4);
+                    }
+                }
+                hull(){
+                    translate([0,0,45])hull(){
+                        translate([9.9-8.4,8.4/2,0])linear_extrude(.1)circle(8.4);
+                        translate([-9.9+8.4,8.4/2,0])linear_extrude(.1)circle(8.4);
+                    }
+                    translate([0,0,75])hull(){
+                        translate([22.3/2-8.4,8.4/2,0])linear_extrude(.1)circle(8.4);
+                        translate([-22.3/2+8.4,8.4/2,0])linear_extrude(.1)circle(8.4);
+                    }
+                    translate([0,0,115])hull(){
+                        translate([23/2-8.4,8.4/2,0])linear_extrude(.1)circle(8.4);
+                        translate([-23/2+8.4,8.4/2,0])linear_extrude(.1)circle(8.4);
+                    }
+                    translate([0,0,165])hull(){
+                        translate([23/2-8.4,8.4/2,0])linear_extrude(.1)circle(8.4);
+                        translate([-23/2+8.4,8.4/2,0])linear_extrude(.1)circle(8.4);
+                    }
+                    translate([0,0,171.75])hull(){
+                        translate([22.5/2-8.4,8.4/2,0])linear_extrude(.1)circle(8.4);
+                        translate([-22.5/2+8.4,8.4/2,0])linear_extrude(.1)circle(8.4);
+                    }
+                    translate([0,0,174])hull(){
+                        translate([22.5/2-8.4,8.4/2,0])linear_extrude(.1)circle(8.4);
+                        translate([-22.5/2+8.4,8.4/2,0])linear_extrude(.1)circle(8.4);
+                    }
+                    translate([0,0,185])hull(){
+                        translate([21.3/2-8.4,8.4/2,0])linear_extrude(.1)circle(8.4);
+                        translate([-21.3/2+8.4,8.4/2,0])linear_extrude(.1)circle(8.4);
+                    }
+                    translate([0,0,195])hull(){
+                        translate([20.3/2-8.4,8.4/2,0])linear_extrude(.1)circle(8.4);
+                        translate([-20.3/2+8.4,8.4/2,0])linear_extrude(.1)circle(8.4);
+                    }
+                    translate([0,0,205])hull(){
+                        translate([19.3/2-8.4,8.4/2,0])linear_extrude(.1)circle(8.4);
+                        translate([-19.3/2+8.4,8.4/2,0])linear_extrude(.1)circle(8.4);
+                    }
+                    translate([0,0,215])hull(){
+                        translate([16/2-8.4,8.4/2,0])linear_extrude(.1)px_circle(8.4);
+                        mirror([1,0,0])translate([16/2-8.4,8.4/2,0])linear_extrude(.1)px_circle(8.4);
+                    }
+                    
+                    translate([0,0,234])intersection(){
+                        translate([13/2-8.4,8.4/2,0])linear_extrude(.1)px_circle(8.4);
+                        mirror([1,0,0])translate([13/2-8.4,8.4/2,0])linear_extrude(.1)px_circle(8.4);
+                    }
+                    translate([0,0,243.5])intersection(){
+                        translate([10.7/2-8.4,8.4/2,0])linear_extrude(.1)px_circle(8.4);
+                        mirror([1,0,0])translate([10.7/2-8.4,8.4/2,0])linear_extrude(.1)px_circle(8.4);
+                    }
+                    translate([0,0,247.5])intersection(){
+                        translate([10/2-7,8.4/2+8.4-7,0])linear_extrude(.1)px_circle(7.75);
+                        mirror([1,0,0])translate([10/2-7,8.4/2+8.4-7,0])linear_extrude(.1)px_circle(7.75);
+                    }
+                    translate([0,0,251.5])intersection(){
+                        translate([8.2/2-5.3,8.4/2+8.4-5.3,0])linear_extrude(.1)px_circle(5.3);
+                        mirror([1,0,0])translate([8.2/2-5.3,8.4/2+8.4-5.3,0])linear_extrude(.1)px_circle(5.3);
+                    }
+                    translate([0,8.4/2,256])linear_extrude(.1)circle(.5);
+                }
+            }
+        translate([0,0,261/2])cube([23,8.4,261],center=true);
+        }
+    }
+    module trapezoid(x1,x2,y){
+        polygon([[-x1/2,-y/2],[x1/2,-y/2],[x2/2,y/2],[-x2/2,y/2]]);
+    }
+
+    module coaming(){
+        hull(){
+            //the triangular light catching part at the aft of the coaming
+            translate([0,0,171.75])linear_extrude(.1)square([22.75,.1],center=true);
+            translate([0,0,174])translate([0,4/2,0])linear_extrude(.1)square([22.75,4],center=true);
+            translate([0,0,195])translate([0,4,0])linear_extrude(.1)square([21.3,.1],center=true);
+        }
+        hull(){
+            translate([0,0,174])linear_extrude(.1)square([22.75,.1],center=true);
+            translate([0,4/2,195])linear_extrude(.1)trapezoid(20.3,21.3,4);
+            translate([0,4/2,205])linear_extrude(.1)trapezoid(19.3,20.3,4);
+            translate([0,4/2,215])linear_extrude(.1)trapezoid(15.75,18,4);
+            translate([0,4.5/2,234])linear_extrude(.1)trapezoid(6.8,14.6,4.5);
+            translate([0,5/2,243.5])linear_extrude(.1)trapezoid(6,11.7,5);
+        }
+        hull(){
+            translate([0,5/2,243.5])linear_extrude(.1)trapezoid(6,11.7,5);
+            translate([0,5.5/2,247.5])linear_extrude(.1)trapezoid(4.5,10,5.5);
+        }
+        hull(){
+            translate([0,5.5/2,247.5])linear_extrude(.1)trapezoid(4.5,10,5.5);
+            translate([0,6/2,251.5])linear_extrude(.1)trapezoid(2.75,8.2,6);
+        }
+        hull(){
+            translate([0,6/2,251.5])linear_extrude(.1)trapezoid(2.75,8.2,6);
+            translate([0,7/2,256])linear_extrude(.1)trapezoid(1.25,5,7);
+        }
+        hull(){
+            translate([0,-6.5,256])linear_extrude(.1)circle(.5);
+            translate([0,0,255.5])linear_extrude(.1)circle(.75);
+            translate([0,1,257.6])linear_extrude(.1)circle(.5);
+        }
+        hull(){
+            translate([0,7/2,256])linear_extrude(.1)trapezoid(1.25,5,7);
+            translate([0,7.5/2,257.5])linear_extrude(.1)trapezoid(1,4,7);
+        }
+        hull(){
+            translate([0,7.5/2,257.5])linear_extrude(.1)trapezoid(1,4,7);
+            translate([0,7,261])linear_extrude(.1)trapezoid(1,1,2);
+        }
+    }
+
+    module waterline_to_deck(){
+        translate([0,0,8.4])linear_extrude(6.5)projection(cut=true)translate([0,0,-8.4/2+.1])rotate([90,0,0])bottom();
+        // square part on the stern
+        translate([0,0,8.4+6.5/2])rotate([90,0,0])hull(){
+            translate([0,0,8.5])linear_extrude(.1)square([13.6,6.5],center=true);
+            translate([0,.25,3.5])linear_extrude(.1)square([10.5,6],center=true);
+            translate([0,.5,0])linear_extrude(.1)square([10.5,5.5],center=true);
+        }
+    }
+
+
+    module solid_hull(){
+        translate([0,0,8.4/2])rotate([90,0,0])bottom();
+        waterline_to_deck();
+        translate([0,0,8.4+6.5])rotate([90,0,0])coaming();
+    }
+
+    module hull_hollower(x_scale,z_scale){
+        intersection(){
+            translate([0,0,8.4/2])rotate([90,0,0])scale([x_scale,1.1,z_scale])bottom();
+            translate([x_scale*-15,z_scale*-250])scale([x_scale,z_scale,1])cube([30,255,8.5]);
+        }
+        // waterline to deck
+        intersection(){
+            translate([0,0,8.35])linear_extrude(6.6)projection(cut=true)translate([0,0,-8.4/2+.1])rotate([90,0,0])scale([x_scale,1,z_scale])bottom();
+            translate([x_scale*-15,z_scale*-250,8.4])scale([x_scale,z_scale,1])cube([30,255,8]);
+        }
+        
+        // empty the back section over the rudders
+        rotate([90,0,0])hull(){
+            translate([0,8.4+5,30*z_scale])linear_extrude(.1)scale([x_scale,1,z_scale])square([14,10],center=true);
+            translate([0,8.4+5,2*z_scale])linear_extrude(.1)scale([x_scale,1,z_scale])square([8,5],center=true);
+        }
+        intersection(){
+            translate([0,0,8.4+6.5])scale([x_scale,z_scale,1])rotate([90,0,0])coaming();
+            translate([x_scale*-15,z_scale*-250,8.4+6.5])scale([x_scale,z_scale,1])cube([30,74,8]);
+        }
+        
+    }
+    module bulkhead(bt=.5,vd=2){
+        difference(){
+            translate([-15,-bt/2,0])cube([30,bt,30]);
+            hull(){
+                translate([1,bt*1.5,12.5])rotate([90,0,0])cylinder(d=vd,h=bt+1);
+                translate([-1,bt*1.5,12.5])rotate([90,0,0])cylinder(d=vd,h=bt+1);
+            }
+        }
+    }
+
+    module bulkheads(){
+        intersection(){
+            union(){
+                translate([0,-39.75,0])bulkhead();
+                translate([0,-68,0])bulkhead();
+                translate([0,-110,0])bulkhead();
+                translate([0,-150,0])bulkhead();
+                translate([0,-175,0])bulkhead();
+                translate([0,-210,0])bulkhead();
+            }
+            difference(){
+                solid_hull();
+                // decks();
+            }
+        }
+    }
+
+    module decks(dt=1){
+        bottom_thickness = 2;
+        x_scale= .9;
+        z_scale=1;
+        difference(){ 
+            intersection(){
+                union(){
+                    translate([-15,-175,8.4+6.5-dt-.1])cube([30,175,dt]);
+                    hull(){
+                        translate([-15,-172,8.4+6.5-dt])cube([30,.1,dt]);
+                        translate([-15,-175,8.4+6.5+4-dt])cube([30,.1,dt]);
+                    }
+                    hull(){
+                        translate([-15,-262,8.4+6.5+4-dt])cube([30,.1,dt+.6]);
+                        translate([-15,-174,8.4+6.5+4-dt])cube([30,.1,dt]);
+                    }
+                }
+    
+                translate([0,-261*(1-z_scale)/2,bottom_thickness])hull_hollower(x_scale,z_scale);
+            }
+        bulkheads();
+        }
+    }
+
+    if(hollow){
+        bottom_thickness = 1.5;
+        x_scale= .9;
+        z_scale=1;
+        difference(){
+            solid_hull();
+            translate([0,-261*(1-z_scale)/2,bottom_thickness])hull_hollower(x_scale,z_scale);
+        }
+        bulkheads();
+        translate([0,0,20])decks();
+    }
+    else{
+
+        color("red",.2)decks();
+
+    }
+
+}
 
 module hull_station(width_top,width_breakover,width_wl,width_wl_half,width_wl_quarter,height_above_wl,height_below_wl,height_breakover,coaming=false){
-    if(!coaming){
-        polygon([
-            // [width_top/2,height_above_wl],
-            [width_breakover/2,height_breakover],
-            [width_wl/2,0],
-            [width_wl_half/2,-height_below_wl/2],
-            [width_wl_quarter/2,-height_below_wl*3/4],
-            [0,-height_below_wl],
-            [-width_wl_quarter/2,-height_below_wl*3/4],
-            [-width_wl_half/2,-height_below_wl/2],
-            [-width_wl/2,0],
-            [-width_breakover/2,height_breakover],
-            // [-width_top/2,height_above_wl],
-        ]);
-    }
+    polygon([
+        // [width_top/2,height_above_wl],
+        [width_breakover/2,height_breakover],
+        [width_wl/2,0],
+        [width_wl_half/2,-height_below_wl/2],
+        [width_wl_quarter/2,-height_below_wl*3/4],
+        [0,-height_below_wl],
+        [-width_wl_quarter/2,-height_below_wl*3/4],
+        [-width_wl_half/2,-height_below_wl/2],
+        [-width_wl/2,0],
+        [-width_breakover/2,height_breakover],
+        // [-width_top/2,height_above_wl],
+    ]);
+
     if(coaming){
         polygon([
             [width_top/2,height_above_wl],
@@ -673,12 +936,12 @@ module turret_1(){
         }
     }
     module from_side(){
-        polygon([[0,0],[0,8],[1,13],[1.5,13.1],[5.5,13.1],[6,13],[7,10],[7,2],[5,2],[5,.5]]);
+        polygon([[0,0],[0,8],[1,13],[1.5,13.1],[4,13.1],[4.5,13],[5.5,10],[5.5,2],[3.5,2],[3.5,.5]]);
     }
 
     module from_front(){
-        polygon([[0,0],[0,5.25],[6,5.25],[7,4.25],[7,0]]);
-        mirror([0,1,0])polygon([[0,0],[0,5.25],[6,5.25],[7,4.25],[7,0]]);
+        polygon([[0,0],[0,5.25],[5,4.5],[5,4.25],[6,0]]);
+        mirror([0,1,0])polygon([[0,0],[0,5.25],[5,4.5],[5,4.25],[6,0]]);
     }
 
     // translate([0,-ring_diameter/2,ring_height])from_above();
@@ -689,24 +952,24 @@ module turret_1(){
         linear_extrude(7)from_above();
         translate([5.25,0,0])rotate([0,-90,0])linear_extrude(5.25*2)from_side();
     }
-    translate([1,1,6])rotate([90,180,0])turret_gun(barrel=true);
-    translate([-1,1,6])rotate([90,180,0])turret_gun(barrel=true);
+    translate([1,1,4])rotate([90,180,0])turret_gun(barrel=true);
+    translate([-1,1,4])rotate([90,180,0])turret_gun(barrel=true);
 }
 
-module turret_gun(barrel=true){
+module turret_gun(barrel=true,barrel_len=15){
     if(barrel){
         hull(){
             linear_extrude(.1)hull(){
                 circle(d=1.5);
-                translate([0,-1.5,0])circle(d=2);
+                translate([0,-1,0])circle(d=2);
             }
             translate([0,0,3])linear_extrude(.1)hull(){
                 circle(d=1.5);
                 translate([0,-1.5,0])circle(d=2);
             }
-            translate([0,0,5])linear_extrude(.1)circle(d=1.5);
+            translate([0,0,5])linear_extrude(.1)circle(d=1);
         }
-        linear_extrude(17)circle(d=.75);
+        linear_extrude(barrel_len)circle(d=.55);
     }
     if(!barrel){
         // if the barrel is too fine to print, use a bit of wire?
@@ -746,43 +1009,34 @@ module tower_1(){
     }
 }
 
+
 module stack_1(){
-    // module from_above(){
-    //     hull(){
-    //         translate([0,-3,0])circle(d=6);
-    //         translate([0,-5,0])circle(d=7);
-    //     }
-    // }
-    module from_front(){
-        // translate([-11.5/2,0,0])square([11.5,3.5]);
-        polygon([[-11.5/2,0],[-11.5/2,3.5],[-6/2-1,3.75],[-6/2,4.5],//[-7/2,22],[7/2,22],
-        [6/2,4.5],[6/2+1,3.75],[11.5/2,3.5],[11.5/2,0]]);
-    }
-    module from_side(){
-        polygon([[0,0],[7,0],[7.1,1.3],[8.5,1.5],[10,19],[3,22],[1.7,6],[1,5],[-2,4.5],[-2,2],[-.5,1.5]]);
-    }
     module tube(){
         difference(){
-            linear_extrude(19)hull(){
+            linear_extrude(22)hull(){
                 circle(d=6);
                 translate([0,2,0])circle(d=6);
             }
         union(){
-            translate([0,0,17.4])rotate([18,0,0])linear_extrude(10)square(12,center=true);
-            // translate([0,0,16])linear_extrude(3)hull(){
-            //     circle(d=5);
-            //     translate([0,2,0])circle(d=5);
-            // }
+            translate([0,0,20.4])rotate([18,0,0])linear_extrude(10)square(12,center=true);
+            //top cut
+            translate([0,.5,20])rotate([0,0,0])linear_extrude(10)square([7,1],center=true);
+
         }
         }
 
     }
-    intersection(){
-        // linear_extrude(22)translate([0,-3,0])from_above();   
-        translate([11.5/2,0,0])rotate([90,0,-90])linear_extrude(22)from_side();
-        translate([0,5,0])rotate([90,0,0])linear_extrude(22)from_front();
+    module roof(){
+        intersection(){
+            hull(){
+                translate([0,-1,0])sphere(d=8.5);
+                translate([0,2.75,0])sphere(d=8.5);
+            }
+            translate([0,0,2])cube([8.5,15,4],center=true);
+        }
     }
-    translate([0,-5.5,3])rotate([4,0,0])tube();
+    translate([0,-5.5,0])rotate([4,0,0])tube();
+    translate([0,-5.5,5])roof();
 }
 
 module building(){
@@ -796,7 +1050,12 @@ module building(){
     intersection(){
         translate([0,59,0])rotate([-90,180,90])from_side();
         from_above();
+        hull(){
+            translate([0,0,.5])sphere(d=6.5);
+            translate([0,59,.5])sphere(d=6.5);
+        }
     }
+    
 }
 
 module stack_2(){
@@ -812,26 +1071,21 @@ module stack_2(){
                 //     translate([0,2,0])circle(d=2);
                 // }
                 translate([0,0,18])rotate([8,0,0])linear_extrude(5)square(10,center=true);
+                // translate([0,.75,17.5])rotate([0,0,0])linear_extrude(10)square([7,.75],center=true);
             }
         }
     }
     module roof(){
         intersection(){
-            linear_extrude(2)hull(){
-                circle(d=5);
-                translate([0,2,0])circle(d=5);
+            hull(){
+                translate([0,-.75,0])sphere(d=6);
+                translate([0,1.5,0])sphere(d=6);
             }
-            translate([-2.5,0,-.75])rotate([0,90,0])linear_extrude(5)hull(){
-                circle(d=5);
-                translate([0,2,0])circle(d=5);
-            }
-            translate([0,-3.5,-.75])rotate([0,90,90])linear_extrude(9)hull(){
-                circle(d=5);
-            }
+            translate([0,0,2])cube([8.5,15,4],center=true);
         }
     }
     rotate([5,0,0])tube();
-    translate([0,-.5,5])roof();
+    translate([0,0,5])roof();
 }
 
 module torpedo_turret(){
@@ -956,8 +1210,8 @@ module tower_2(){
         translate([20/2-3,0,9.1])linear_extrude(1.5)square([5.8,2.8],center=true);
         translate([-20/2+3,0,9.1])linear_extrude(1.5)square([5.8,2.8],center=true);
         translate([0,0,9.1])linear_extrude(.5)square([20,3],center=true);
-        translate([11,0,0])rotate([0,-8,0])catwalk_support();
-        translate([-11,0,0])rotate([0,8,0])catwalk_support();
+        translate([10,0,0])rotate([0,-8,0])catwalk_support();
+        translate([-10,0,0])rotate([0,8,0])catwalk_support();
     }
     translate([0,2,-1])gun_platform();
     translate([0,-10,5])union(){
@@ -980,16 +1234,16 @@ module tower_3(){
     module crane(){
         linear_extrude(1.5)circle(d=2,$fn=8);
         translate([.5,0,1.5])rotate([0,0,45])linear_extrude(1)circle(d=1.25,$fn=4);
-        translate([.75,-1,1.5+.75])rotate([-90,0,0])linear_extrude(17)square([.5,.75]);
-        translate([.75,16.5,-4])rotate([0,-8,90])scale([.8,.8,.65])catwalk_support();
+        translate([.75,-1,1.5+.75])rotate([-90,0,0])linear_extrude(15.75)square([.5,.75]);
+        translate([1,15.25,-5])rotate([0,-8,90])scale([.8,.8,.75])catwalk_support();
 
     }
     module box(){
         difference(){
             union(){
-                linear_extrude(2)square([20,7]);
+                linear_extrude(1.5)square([20,7]);
                 for(i=[0:7/4:7]){
-                    translate([0,i,0])linear_extrude(2.2)square([20,1]);
+                    translate([0,i,0])linear_extrude(1.7)square([20,1]);
                 }
             }
             translate([20,6,0])rotate([0,0,45])cube(3);
@@ -1019,7 +1273,7 @@ module turret_2(){
     }
     linear_extrude(.5)circle(d=6.5);
     body();
-    translate([0,1.5,2])rotate([-90,0,0])turret_gun(barrel=true);
+    translate([0,1.5,2])rotate([-90,0,0])turret_gun(barrel=true,barrel_len=12.75);
     sight();
 }
 
@@ -1109,8 +1363,64 @@ module life_boats(){
     mirror([1,0,0])translate([8,0,6.5])life_boat();
 }
 
-module skiff_boat(){
 
+module ship_boat(){
+    module main_hull(){
+        difference(){
+            intersection(){
+                hull(){
+                    translate([0,-1,0])sphere(d=2);
+                    translate([0,-1,-3])sphere(d=.5);
+                    translate([0,-2.75,0])sphere(d=3.5);
+                    translate([0,-5,0])sphere(d=4.5);
+                    translate([0,-5,-1])sphere(d=4.5);
+                    translate([0,-10,0])sphere(d=4.5);
+                    translate([0,-10,-.5])sphere(d=4.5);
+                    translate([0,-16.75,0])sphere(d=3.5);
+
+                }
+            translate([0,-18/2,-3.5/2])cube([4.5,18,3.5],center=true);
+            }
+            intersection(){
+                hull(){
+                    translate([0,-1,0])sphere(d=1);
+                    // translate([0,-1,-3])sphere(d=.);
+                    translate([0,-2.75,0])sphere(d=2.5);
+                    translate([0,-5,0])sphere(d=3.5);
+                    translate([0,-5,-1])sphere(d=3.5);
+                    translate([0,-10,0])sphere(d=3.5);
+                    translate([0,-10,-.5])sphere(d=3.5);
+                    translate([0,-17,0])sphere(d=2.5);
+                }
+            union(){
+                translate([0,-18/2,1.75+-3.5/2])cube([4.5,17,1.6],center=true);
+                translate([0,-18/2,1.5+-3.5/2])cube([2,10,2.75],center=true);
+            }
+            }
+        }
+    }
+    module windshield(){
+        difference(){
+            translate([0,0,-1.6])linear_extrude(5.5)
+                minkowski(){
+                    polygon([[-1,0],[1,0],[.8,1.5],[-.8,1.5]]);
+                    circle(d=.2);
+                }
+            union(){
+                translate([-2.5,-1,4])rotate([-10,0,0])cube(5);
+                translate([0,0.7,2.75])cube([5,.75,.75],center=true);
+                translate([0,1.5,2.75])cube([1.25,5,.75],center=true);
+                translate([0,-1.75,2])cube([1.25,5,3],center=true);
+            }
+        }
+    }
+    main_hull();
+    translate([0,-3.75,-1])windshield();
+}
+module ship_boats(){
+    translate([8,0,6.75])ship_boat();
+    // davit();
+    mirror([1,0,0])translate([8,0,6.75])ship_boat();
 }
 
 module ladder(n){
@@ -1188,19 +1498,19 @@ module hull_hollowed(a,b){
         }
         
     }
-    module rudder(){
-        translate([0,0,-.25])linear_extrude(.5)scale(.8)minkowski(){
-            polygon([[0,7],[2,0],[5,0],[6,2],[6,6]]);
-            circle(d=2);
-        }
-        translate([3.5,5,0])rotate([-90,0,-7])linear_extrude(10)circle(d=.75);
-    }
+
     color("red")translate([5,-6,17])rotate([-2,0,0])propeller_shafts();
     color("red")translate([-5,-6,17])rotate([-2,0,0])propeller_shafts();
     color("red")translate([4.5,-7.5,9])rotate([0,-90,0])rudder();
     color("red")translate([-4.5,-7.5,9])rotate([0,-90,0])rudder();
 }
-
+module rudder(){
+    translate([0,0,-.25])linear_extrude(.5)scale(.8)minkowski(){
+        polygon([[0,7],[2,0],[5,0],[6,2],[6,6]]);
+        circle(d=2);
+    }
+    translate([3.5,5,0])rotate([-90,0,-7])linear_extrude(10)circle(d=.75);
+}
 module gear_box(){
     // a gear/transfer case
     // 2 prop gears prop shafts
@@ -1211,9 +1521,12 @@ module gear_box(){
     // bearings are 3.2mm id 9.5mm od 4mm depth R2ZZ 10 PCS Deep Groove Ball Bearing
     // need to redesign for tooth mesh too...
     motor_gear_d = 6.2;
+    motor_gear_d_2 = 13.7;
     prop_gear_d = 14.2;
     middle_gear_d = 7.6;
     translate([middle_gear_d/2-1,middle_gear_d/2+motor_gear_d/2-.6,0])linear_extrude(7)circle(d=motor_gear_d);
+    translate([middle_gear_d/2-1,middle_gear_d/2+motor_gear_d/2-.6,-8])linear_extrude(7)circle(d=motor_gear_d_2);
+    translate([2*sqrt((motor_gear_d_2+motor_gear_d)/2)+middle_gear_d/2-1,2*sqrt((motor_gear_d_2+motor_gear_d)/2)+middle_gear_d/2+motor_gear_d/2-.6,-8])linear_extrude(7)circle(d=motor_gear_d);
     translate([-prop_gear_d/2-middle_gear_d/2+.6,(prop_gear_d-middle_gear_d)/2,0]){
         linear_extrude(7)circle(d=prop_gear_d);
         linear_extrude(200)circle(d=3.175);
@@ -1224,7 +1537,6 @@ module gear_box(){
     }
     translate([0,0,0])linear_extrude(7)circle(d=middle_gear_d);
     translate([middle_gear_d,0,0])linear_extrude(7)circle(d=middle_gear_d);
-
     
 }
 
@@ -1234,21 +1546,29 @@ module motor(){
     translate([0,0,19+4.5])linear_extrude(10)circle(d=2.3);
 }
 scale(scale_1_144){
-    main_hull();
-    // hull_hollowed(a=true);
-    // translate([0,10.5,226-8])rotate([-90,0,0])turret_1();
-    // translate([0,6.5,44])rotate([-90,180,0])turret_1();
-    // translate([0,10,195])rotate([-90,90,0])tower_1();
-    // translate([0,6.5,174])rotate([-90,0,0])building();
-    // translate([0,6.5,165])rotate([-90,180,0])stack_1();
-    // translate([0,9,141])rotate([-90,180,0])torpedo_turret();
-    // translate([0,6.5,129])rotate([-90,180,0])tower_2();
-    // translate([0,6.5,102])rotate([-90,180,0])torpedo_turret();
-    // translate([0,10.5,190])rotate([-90,180,0])life_boats();
-    // translate([0,6.5,169])rotate([-90,180,0])life_boats(); // these should be changed to ships boats
-    // color("red")translate([-7.5,6.5,92])rotate([0,-90,-90])tower_3();
-    // translate([0,6.5,60])rotate([90,0,180])turret_2();
+    hull_2(hollow=true);
+//     main_hull();
+//     hull_hollowed(a=true);
+translate([0,0,20+8.4])rotate([90,0,0]){
+    translate([0,10.5,226-8])rotate([-90,0,0])turret_1();
+    translate([0,6.5,44])rotate([-90,180,0])turret_1();
+    translate([0,10,195])rotate([-90,90,0])tower_1();
+    translate([0,6.5,174])rotate([-90,0,0])building();
+    translate([0,6.5,166])rotate([-90,180,0])stack_1();
+    translate([0,9,140])rotate([-90,180,0])torpedo_turret();
+    translate([0,6.5,129])rotate([-90,180,0])tower_2();
+    translate([0,6.5,102])rotate([-90,180,0])torpedo_turret();
+    translate([0,10.5,190])rotate([-90,180,0])life_boats();
+    translate([0,6.5,171])rotate([-90,180,0])ship_boats(); // these should be changed to ships boats
+    translate([-7.5,6.5,92])rotate([0,-90,-90])tower_3();
+    translate([0,6.5,60])rotate([90,0,180])turret_2();
 }
-// servo_9g();
-// translate([2.5,56,-19-15+7])motor();
-// translate([0,50,0])gear_box();
+    
+}
+// scale(scale_1_144)ship_boat();
+// translate([20,0,0])rotate([0,90,0])ship_boat();
+translate([12,-26,3])rotate([90,3,-90])scale(scale_1_144)rudder();
+mirror([1,0,0])translate([12,-26,3])rotate([90,3,-90])scale(scale_1_144)rudder();
+color("red",.5)translate([0,-55,30])rotate([-82,0,0])servo_9g();
+color("red",.5)translate([-4.9,-295,23.9])rotate([-93,0,0])motor();
+color("red",.5)translate([4,-260,10])rotate([-87,180,0])gear_box();
